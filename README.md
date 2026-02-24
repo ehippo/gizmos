@@ -1,133 +1,100 @@
 # AxelGizmos
 
-> A lightweight, open-source developer toolkit built with **Wails + Go + React**.
+A professional-grade, locally hosted developer toolkit built for speed, privacy, and precision. Powered by **Wails**, **Go**, and **React**.
 
-## ✨ Features
+---
 
-### 🔐 Encoders / Decoders
-- **Base64** — Encode & decode with URL-safe mode support
-- **URL** — URL encode/decode with special character handling
+## Why AxelGizmos?
 
-### 🎨 Formatters
-- **JSON** — Format with syntax validation, minify, error highlighting
-- **SQL** — Keyword capitalization, clause formatting with indentation
+AxelGizmos provides a clean, native desktop app that respects your workflow and your data.
 
-### 🔄 Converters
-- **Unix Time** — Live clock, timestamp ↔ human time, relative time, multiple formats
-- **Color** — HEX → RGB, HSL, RGBA with visual color picker
-- **Number Base** — DEC ↔ HEX ↔ BIN ↔ OCT conversion
+- **Privacy First**: All processing happens locally on your machine. No data ever leaves your system, making it safe for sensitive keys, logs, and internal data.
+- **Native Performance**: Built with a Go back-end, AxelGizmos handles large payloads and complex computations instantly, bypassing the limitations of browser-based tools.
+- **Unified Workflow**: Stop jumping between browser tabs. Access every utility—from JWT debugging to Cron scheduling—within a single, sleek interface.
+- **Premium Aesthetics**: Featuring multiple curated themes (Midnight, Mocha, Solarized), AxelGizmos is designed to look as good as it performs.
 
-### ⚡ Generators
-- **Cron** — Visual cron expression builder with templates & next-run preview
-- **Password** — Configurable generator with strength meter & bulk generation
-- **UUID** — v4 generator with structure breakdown, validator, bulk generation
+---
 
-### 📝 Text Tools
-- **Text Utils** — Transform, analyze (word/char/line stats), sort, deduplicate
-- **Diff** — Side-by-side text comparison with diff highlighting
+## Technical Capabilities
 
-## 🚀 Getting Started
+### Encoding and Security
+- **Base64**: Robust encoding and decoding with URL-safe support.
+- **URL**: Precision handling of special characters and complex query strings.
+- **JWT Debugger**: Header and payload breakdown with expiration validation.
+- **Password Generator**: High-entropy generation with configurable complexity and bulk output.
+
+### Data Formatting
+- **JSON**: Logic-aware formatting with syntax validation, minification, and error highlighting.
+- **SQL**: Clause-based formatting with indentation and keyword capitalization.
+- **XML / HTML**: Clean structure restoration for nested markup.
+- **CSS**: Minification and beautification for modern stylesheets.
+
+### Conversion and Math
+- **Unix Time**: Live synchronization with bi-directional human-time conversion and relative offsets.
+- **Number Base**: Seamless switching between Decimal, Hexadecimal, Binary, and Octal formats.
+- **Color**: Advanced conversion between HEX, RGB, HSL, and RGBA with a visual palette.
+
+### Development Utilities
+- **Regex Tester**: Real-time expression testing with match highlights and group capture.
+- **UUID**: Version 4 generation with structure verification and bulk processing.
+- **Cron**: Visual expression builder with template support and next-run scheduling previews.
+- **Diff**: Side-by-side comparison with granular line and character highlighting.
+- **Text Utils**: Comprehensive suite for sorting, deduplication, and statistical analysis.
+
+---
+
+## Interface
+
+### Base64 encoder/decoder
+![Base64 encoder/decoder](./docs/app1.png)
+
+
+| JWT encoder/decoder | Timestamp converter |
+| :---: | :---: |
+| <img src="./docs/app2.png" width="400" /> | <img src="./docs/app3.png" width="400" /> |
+
+---
+
+## Getting Started
 
 ### Prerequisites
+- Go 1.25+
+- Node.js 24+
+- Wails CLI v2
 
-- [Go 1.25+](https://go.dev/dl/)
-- [Node.js 24+](https://nodejs.org/)
-- [Wails CLI v2](https://wails.io/docs/gettingstarted/installation)
-
+### Installation
 ```bash
+# Install Wails CLI
 go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+# Clone and Install Dependencies
+git clone https://github.com/axel/gizmos.git
+cd gizmos/frontend && npm install
 ```
 
-### Development
-
+### Build and Run
 ```bash
-# Install frontend dependencies
-cd frontend && npm install && cd ..
-
-# Run in development mode (hot reload)
+# Development Mode
 wails dev
-```
 
-### Build
-
-```bash
-# Build production binary
+# Production Build
 wails build
-
-# Output: ./build/bin/AxelGizmos (or AxelGizmos.exe on Windows)
 ```
 
-### Build for specific platforms
+The resulting binary will be located in the `build/bin` directory.
 
-```bash
-# macOS
-wails build -platform darwin/amd64
+---
 
-# Linux
-wails build -platform linux/amd64
+## Contribution
 
-# Windows
-wails build -platform windows/amd64
-```
+AxelGizmos is built for developers, by developers. Pull requests for new tools or performance improvements are always welcome.
 
-## 🗂 Project Structure
+1.  Implement the back-end logic in `app.go`.
+2.  Define the React interface in `frontend/src/tools/`.
+3.  Register the new component in `App.jsx`.
 
-```
-gizmos/
-├── main.go              # Wails entry point
-├── app.go               # All Go backend tool implementations
-├── wails.json           # Wails configuration
-├── go.mod               # Go module
-└── frontend/
-    ├── index.html
-    ├── package.json
-    ├── vite.config.js
-    └── src/
-        ├── main.jsx         # React entry
-        ├── App.jsx          # Main layout + sidebar navigation
-        ├── wailsbridge.js   # Wails/Go bridge + dev-mode fallbacks
-        ├── components/
-        │   └── ui.jsx       # Shared UI components
-        ├── styles/
-        │   ├── globals.css  # Design system / CSS variables
-        │   └── App.module.css
-        └── tools/
-            ├── Base64Tool.jsx
-            ├── JSONTool.jsx
-            ├── SQLTool.jsx
-            ├── UnixTimeTool.jsx
-            ├── CronTool.jsx
-            ├── PasswordTool.jsx
-            ├── UUIDTool.jsx
-            ├── URLTool.jsx
-            ├── ColorTool.jsx
-            ├── BaseTool.jsx
-            ├── TextTool.jsx
-            └── DiffTool.jsx
-```
+---
 
-## 🏗 Architecture
+## License
 
-- **Backend (Go)**: All tool logic runs natively in Go for maximum performance and correctness. Exposed to frontend via Wails bindings.
-- **Frontend (React + Vite)**: Dark-themed UI with a collapsible sidebar. Each tool is a self-contained React component.
-- **Bridge**: `wailsbridge.js` provides JavaScript fallbacks for browser dev mode, so you can develop the UI with just `npm run dev` without the full Wails runtime.
-
-## 🎨 Design System
-
-The UI uses a custom dark design system defined in `globals.css`:
-- **Colors**: Deep navy base (`#0d0d12`) with violet accent (`#7c6af7`)
-- **Typography**: Space Grotesk (UI) + JetBrains Mono (code)
-- **Components**: All shared UI in `components/ui.jsx` — Panel, Btn, CodeArea, Toggle, Slider, etc.
-
-## 🤝 Contributing
-
-PRs welcome! To add a new tool:
-
-1. Add Go method(s) to `app.go`
-2. Add JS fallback to `wailsbridge.js`
-3. Create `frontend/src/tools/YourTool.jsx`
-4. Register in `App.jsx` TOOLS array
-
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
