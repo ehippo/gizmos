@@ -30,8 +30,8 @@
 
 ### Prerequisites
 
-- [Go 1.21+](https://go.dev/dl/)
-- [Node.js 18+](https://nodejs.org/)
+- [Go 1.25+](https://go.dev/dl/)
+- [Node.js 24+](https://nodejs.org/)
 - [Wails CLI v2](https://wails.io/docs/gettingstarted/installation)
 
 ```bash
