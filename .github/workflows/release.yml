@@ -45,7 +45,7 @@ jobs:
       - name: Build macOS
         if: matrix.os == 'macos-latest'
         run: |
-          wails build -platform ${{ matrix.platform }} -package -ldflags "-s -w"
+          wails build -platform ${{ matrix.platform }} -ldflags "-s -w"
           # Create DMG
           hdiutil create -volname "AxelGizmos" -srcfolder "build/bin/AxelGizmos.app" -ov -format UDZO AxelGizmos.dmg
 
