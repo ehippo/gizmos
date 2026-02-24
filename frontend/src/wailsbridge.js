@@ -12,33 +12,53 @@ const mockGo = {
   main: {
     App: {
       Base64Encode: async (s) => base64.encode(s),
-      Base64Decode: async (s) => { try { return base64.decode(s); } catch(e) { throw e.message; } },
+      Base64Decode: async (s) => { try { return base64.decode(s); } catch (e) { throw e.message; } },
 
       JSONFormat: async (input, indent) => {
         try {
           const raw = JSON.parse(input);
           return { output: JSON.stringify(raw, null, indent), valid: true, error: '' };
-        } catch(e) { return { output: '', valid: false, error: e.message }; }
+        } catch (e) { return { output: '', valid: false, error: e.message }; }
       },
       JSONMinify: async (input) => {
         try {
           return { output: JSON.stringify(JSON.parse(input)), valid: true, error: '' };
-        } catch(e) { return { output: '', valid: false, error: e.message }; }
+        } catch (e) { return { output: '', valid: false, error: e.message }; }
       },
 
       SQLFormat: async (input) => {
-        const kw = ['SELECT','FROM','WHERE','AND','OR','JOIN','INNER JOIN','LEFT JOIN','RIGHT JOIN',
-          'GROUP BY','ORDER BY','HAVING','LIMIT','INSERT INTO','VALUES','UPDATE','SET','DELETE FROM',
-          'CREATE TABLE','WITH','UNION','ON','AS','DISTINCT','NOT','IN','EXISTS'];
-        let r = input;
-        kw.forEach(k => {
-          r = r.replace(new RegExp('\\b'+k+'\\b', 'gi'), k);
+        const keywords = [
+          "SELECT", "FROM", "WHERE", "AND", "OR", "NOT", "IN", "EXISTS",
+          "INSERT", "INTO", "VALUES", "UPDATE", "SET", "DELETE",
+          "CREATE", "TABLE", "DROP", "ALTER", "ADD", "COLUMN",
+          "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "OUTER", "CROSS",
+          "ON", "AS", "GROUP", "BY", "ORDER", "HAVING", "LIMIT", "OFFSET",
+          "DISTINCT", "ALL", "UNION", "EXCEPT", "INTERSECT",
+          "NULL", "IS", "LIKE", "BETWEEN", "CASE", "WHEN", "THEN", "ELSE", "END",
+          "PRIMARY", "KEY", "FOREIGN", "REFERENCES", "UNIQUE", "INDEX",
+          "BEGIN", "COMMIT", "ROLLBACK", "TRANSACTION",
+          "COUNT", "SUM", "AVG", "MIN", "MAX", "COALESCE", "NULLIF",
+          "CAST", "CONVERT", "VARCHAR", "INT", "INTEGER", "BIGINT", "TEXT",
+          "BOOLEAN", "DATE", "TIMESTAMP", "FLOAT", "DECIMAL", "NUMERIC",
+          "WITH", "RECURSIVE", "OVER", "PARTITION", "ROW_NUMBER", "RANK",
+          "ASC", "DESC", "TRUE", "FALSE",
+        ];
+        const majorClauses = [
+          "SELECT", "FROM", "WHERE", "JOIN", "INNER JOIN", "LEFT JOIN",
+          "RIGHT JOIN", "FULL JOIN", "GROUP BY", "ORDER BY", "HAVING",
+          "LIMIT", "UNION", "EXCEPT", "INTERSECT", "INSERT INTO",
+          "VALUES", "UPDATE", "SET", "DELETE FROM", "CREATE TABLE",
+          "WITH",
+        ];
+        let res = input;
+        keywords.forEach(kw => {
+          res = res.replace(new RegExp('\\b' + kw + '\\b', 'gi'), kw.toUpperCase());
         });
-        kw.forEach(k => {
-          r = r.replace(new RegExp('(^|\\s)'+k+'\\s', 'gm'), '\n'+k+' ');
+        majorClauses.forEach(clause => {
+          res = res.replace(new RegExp('(^|\\s)' + clause + '\\s', 'gi'), (m) => '\n' + m.trim().toUpperCase() + ' ');
         });
-        r = r.replace(/\s(AND|OR)\s/gi, '\n  $1 ');
-        return r.trim();
+        res = res.replace(/\s(AND|OR)\s/gi, (m) => '\n  ' + m.trim().toUpperCase() + ' ');
+        return res.trim().replace(/\n{3,}/g, '\n\n');
       },
 
       UnixToTime: async (ts) => {
@@ -46,13 +66,17 @@ const mockGo = {
         const now = new Date();
         const diff = (now - d) / 1000;
         let rel = '';
-        if (Math.abs(diff) < 60) rel = `${Math.abs(diff)|0}s ${diff > 0 ? 'ago' : 'from now'}`;
-        else if (Math.abs(diff) < 3600) rel = `${(Math.abs(diff)/60)|0}m ${diff > 0 ? 'ago' : 'from now'}`;
-        else if (Math.abs(diff) < 86400) rel = `${(Math.abs(diff)/3600)|0}h ${diff > 0 ? 'ago' : 'from now'}`;
-        else rel = `${(Math.abs(diff)/86400)|0}d ${diff > 0 ? 'ago' : 'from now'}`;
+        const absDiff = Math.abs(diff);
+        const suffix = diff > 0 ? ' ago' : ' from now';
+
+        if (absDiff < 60) rel = `${Math.floor(absDiff)}s${suffix}`;
+        else if (absDiff < 3600) rel = `${Math.floor(absDiff / 60)}m${suffix}`;
+        else if (absDiff < 86400) rel = `${Math.floor(absDiff / 3600)}h${suffix}`;
+        else rel = `${Math.floor(absDiff / 86400)}d${suffix}`;
+
         return {
-          utc: d.toISOString().replace('T',' ').replace('.000Z',' UTC'),
-          unix: Math.floor(d.getTime()/1000),
+          utc: d.toISOString().replace('T', ' ').split('.')[0] + ' UTC',
+          unix: Math.floor(d.getTime() / 1000),
           unixMilli: d.getTime(),
           iso8601: d.toISOString(),
           rfc822: d.toUTCString(),
@@ -60,11 +84,14 @@ const mockGo = {
         };
       },
       NowTime: async () => {
-        const d = new Date(); const ts = Math.floor(d.getTime()/1000);
+        const d = new Date();
         return {
-          utc: d.toISOString().replace('T',' ').replace('.000Z',' UTC'),
-          unix: ts, unixMilli: d.getTime(),
-          iso8601: d.toISOString(), rfc822: d.toUTCString(), relative: 'just now'
+          utc: d.toISOString().replace('T', ' ').split('.')[0] + ' UTC',
+          unix: Math.floor(d.getTime() / 1000),
+          unixMilli: d.getTime(),
+          iso8601: d.toISOString(),
+          rfc822: d.toUTCString(),
+          relative: 'just now'
         };
       },
 
@@ -90,44 +117,30 @@ const mockGo = {
         return { score, max: 6, label, checks };
       },
 
-      GenerateUUID: async () => {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-          const r = Math.random() * 16 | 0;
-          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-      },
-      GenerateUUIDs: async (count) => {
-        return Array.from({length: count}, () =>
-          'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-            const r = Math.random() * 16 | 0;
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-          })
-        );
-      },
-      ValidateUUID: async (input) => {
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input);
-      },
+      GenerateUUID: async () => crypto.randomUUID(),
+      GenerateUUIDs: async (count) => Array.from({ length: count }, () => crypto.randomUUID()),
+      ValidateUUID: async (input) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input),
 
       URLEncode: async (s) => encodeURIComponent(s),
-      URLDecode: async (s) => { try { return decodeURIComponent(s); } catch(e) { throw e.message; } },
+      URLDecode: async (s) => { try { return decodeURIComponent(s); } catch { return s; } },
 
       HexToColor: async (hex) => {
-        hex = hex.replace('#','');
-        if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
-        const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
-        const rf=r/255, gf=g/255, bf=b/255;
-        const max=Math.max(rf,gf,bf), min=Math.min(rf,gf,bf);
-        let h=0, s=0, l=(max+min)/2;
-        if (max!==min) {
-          const d=max-min;
-          s=l>0.5?d/(2-max-min):d/(max+min);
-          switch(max){case rf:h=(gf-bf)/d+(gf<bf?6:0);break;case gf:h=(bf-rf)/d+2;break;case bf:h=(rf-gf)/d+4;}
-          h/=6;
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        const r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
+        const rf = r / 255, gf = g / 255, bf = b / 255;
+        const max = Math.max(rf, gf, bf), min = Math.min(rf, gf, bf);
+        let h = 0, s = 0, l = (max + min) / 2;
+        if (max !== min) {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) { case rf: h = (gf - bf) / d + (gf < bf ? 6 : 0); break; case gf: h = (bf - rf) / d + 2; break; case bf: h = (rf - gf) / d + 4; }
+          h /= 6;
         }
         return {
-          hex:`#${hex}`, rgb:`rgb(${r}, ${g}, ${b})`,
-          hsl:`hsl(${Math.round(h*360)}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)`,
-          rgba:`rgba(${r}, ${g}, ${b}, 1)`
+          hex: `#${hex}`, rgb: `rgb(${r}, ${g}, ${b})`,
+          hsl: `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`,
+          rgba: `rgba(${r}, ${g}, ${b}, 1)`
         };
       },
 
@@ -138,28 +151,28 @@ const mockGo = {
       },
 
       TextAnalyze: async (input) => {
-        if (!input) return { characters:0, words:0, lines:0, sentences:0, paragraphs:0, uniqueWords:0 };
+        if (!input) return { characters: 0, words: 0, lines: 0, sentences: 0, paragraphs: 0, uniqueWords: 0 };
         const words = input.split(/\s+/).filter(Boolean);
-        const unique = new Set(words.map(w => w.toLowerCase().replace(/[.,!?;:"'()\[\]{}]/g,'')));
+        const unique = new Set(words.map(w => w.toLowerCase().replace(/[.,!?;:"'()\[\]{}]/g, '')));
         return {
           characters: input.length, words: words.length,
-          lines: (input.match(/\n/g)||[]).length+1,
-          sentences: (input.match(/[.!?]+/g)||[]).length,
-          paragraphs: (input.match(/\n\s*\n/g)||[]).length+1,
+          lines: (input.match(/\n/g) || []).length + 1,
+          sentences: (input.match(/[.!?]+/g) || []).length,
+          paragraphs: (input.match(/\n\s*\n/g) || []).length + 1,
           uniqueWords: unique.size
         };
       },
       TextTransform: async (input, transform) => {
-        switch(transform) {
+        switch (transform) {
           case 'upper': return input.toUpperCase();
           case 'lower': return input.toLowerCase();
-          case 'title': return input.toLowerCase().replace(/\b\w/g, c=>c.toUpperCase());
-          case 'camel': return input.split(/\s+/).map((w,i)=>i===0?w.toLowerCase():w[0].toUpperCase()+w.slice(1).toLowerCase()).join('');
-          case 'snake': return input.toLowerCase().replace(/[\s-]+/g,'_');
-          case 'kebab': return input.toLowerCase().replace(/[\s_]+/g,'-');
-          case 'pascal': return input.split(/\s+/).map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join('');
+          case 'title': return input.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+          case 'camel': return input.split(/\s+/).map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1).toLowerCase()).join('');
+          case 'snake': return input.toLowerCase().replace(/[\s-]+/g, '_');
+          case 'kebab': return input.toLowerCase().replace(/[\s_]+/g, '-');
+          case 'pascal': return input.split(/\s+/).map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('');
           case 'reverse': return input.split('').reverse().join('');
-          case 'trim': return input.split('\n').map(l=>l.trim()).join('\n');
+          case 'trim': return input.split('\n').map(l => l.trim()).join('\n');
           default: return input;
         }
       },
@@ -168,22 +181,43 @@ const mockGo = {
         const leftLines = left.split('\n');
         const rightLines = right.split('\n');
         const result = [];
-        // Simple diff
-        const maxLen = Math.max(leftLines.length, rightLines.length);
-        for (let i = 0; i < maxLen; i++) {
-          if (i >= leftLines.length) {
-            result.push({type:'added', content: rightLines[i], lineNum: i+1});
-          } else if (i >= rightLines.length) {
-            result.push({type:'removed', content: leftLines[i], lineNum: i+1});
-          } else if (leftLines[i] === rightLines[i]) {
-            result.push({type:'equal', content: leftLines[i], lineNum: i+1});
-          } else {
-            result.push({type:'removed', content: leftLines[i], lineNum: i+1});
-            result.push({type:'added', content: rightLines[i], lineNum: i+1});
+        // LCS based diff
+        const m = leftLines.length, n = rightLines.length;
+        const dp = Array.from({ length: m + 1 }, () => new Int32Array(n + 1));
+        for (let i = 1; i <= m; i++) {
+          for (let j = 1; j <= n; j++) {
+            if (leftLines[i - 1] === rightLines[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+            else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
           }
         }
-        return result;
-      }
+        let i = m, j = n;
+        const diff = [];
+        while (i > 0 || j > 0) {
+          if (i > 0 && j > 0 && leftLines[i - 1] === rightLines[j - 1]) {
+            diff.push({ type: 'equal', content: leftLines[i - 1], lineNum: i });
+            i--; j--;
+          } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+            diff.push({ type: 'added', content: rightLines[j - 1], lineNum: j });
+            j--;
+          } else {
+            diff.push({ type: 'removed', content: leftLines[i - 1], lineNum: i });
+            i--;
+          }
+        }
+        return diff.reverse();
+      },
+
+      JWTEncode: async (header, payload, secret) => {
+        const b64 = (s) => btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        try {
+          const h = JSON.stringify(JSON.parse(header));
+          const p = JSON.stringify(JSON.parse(payload));
+          const unsigned = b64(h) + '.' + b64(p);
+          // Placeholder signature
+          const sig = b64(secret + ':' + unsigned.slice(0, 16));
+          return unsigned + '.' + sig;
+        } catch (e) { throw e.message; }
+      },
     }
   }
 };
@@ -198,27 +232,27 @@ export const callGo = async (method, ...args) => {
   return fn(...args);
 };
 
-// Shorthand wrappers
+// Direct API mapping to JS implementations
 export const API = {
-  base64Encode: (s) => callGo('main.App.Base64Encode', s),
-  base64Decode: (s) => callGo('main.App.Base64Decode', s),
-  jsonFormat: (s, indent) => callGo('main.App.JSONFormat', s, indent),
-  jsonMinify: (s) => callGo('main.App.JSONMinify', s),
-  sqlFormat: (s) => callGo('main.App.SQLFormat', s),
-  unixToTime: (ts) => callGo('main.App.UnixToTime', ts),
-  nowTime: () => callGo('main.App.NowTime'),
-  generatePassword: (opts) => callGo('main.App.GeneratePassword', opts),
-  passwordStrength: (pwd) => callGo('main.App.PasswordStrength', pwd),
-  generateUUID: () => callGo('main.App.GenerateUUID'),
-  generateUUIDs: (n) => callGo('main.App.GenerateUUIDs', n),
-  validateUUID: (s) => callGo('main.App.ValidateUUID', s),
-  urlEncode: (s) => callGo('main.App.URLEncode', s),
-  urlDecode: (s) => callGo('main.App.URLDecode', s),
-  hexToColor: (s) => callGo('main.App.HexToColor', s),
-  convertBase: (s, from) => callGo('main.App.ConvertBase', s, from),
-  textAnalyze: (s) => callGo('main.App.TextAnalyze', s),
-  textTransform: (s, t) => callGo('main.App.TextTransform', s, t),
-  textDiff: (l, r) => callGo('main.App.TextDiff', l, r),
+  base64Encode: (s) => mockGo.main.App.Base64Encode(s),
+  base64Decode: (s) => mockGo.main.App.Base64Decode(s),
+  jsonFormat: (s, indent) => mockGo.main.App.JSONFormat(s, indent),
+  jsonMinify: (s) => mockGo.main.App.JSONMinify(s),
+  sqlFormat: (s) => mockGo.main.App.SQLFormat(s),
+  unixToTime: (ts) => mockGo.main.App.UnixToTime(ts),
+  nowTime: () => mockGo.main.App.NowTime(),
+  generatePassword: (opts) => mockGo.main.App.GeneratePassword(opts),
+  passwordStrength: (pwd) => mockGo.main.App.PasswordStrength(pwd),
+  generateUUID: () => mockGo.main.App.GenerateUUID(),
+  generateUUIDs: (n) => mockGo.main.App.GenerateUUIDs(n),
+  validateUUID: (s) => mockGo.main.App.ValidateUUID(s),
+  urlEncode: (s) => mockGo.main.App.URLEncode(s),
+  urlDecode: (s) => mockGo.main.App.URLDecode(s),
+  hexToColor: (s) => mockGo.main.App.HexToColor(s),
+  convertBase: (s, from) => mockGo.main.App.ConvertBase(s, from),
+  textAnalyze: (s) => mockGo.main.App.TextAnalyze(s),
+  textTransform: (s, t) => mockGo.main.App.TextTransform(s, t),
+  textDiff: (l, r) => mockGo.main.App.TextDiff(l, r),
 };
 
 // ── New tool additions ────────────────────────────────────────────────────────
@@ -229,7 +263,7 @@ mockGo.main.App.JWTDecode = async (token) => {
   const parts = token.split('.');
   if (parts.length !== 3) return { error: 'invalid JWT: expected 3 parts', valid: false };
   const decode = (s) => {
-    s = s.replace(/-/g,'+').replace(/_/g,'/');
+    s = s.replace(/-/g, '+').replace(/_/g, '/');
     while (s.length % 4) s += '=';
     try {
       return JSON.stringify(JSON.parse(atob(s)), null, 2);
@@ -244,15 +278,15 @@ mockGo.main.App.JWTDecode = async (token) => {
     let isExpired = false, expiresAt = '', issuedAt = '';
     if (pObj.exp) {
       const d = new Date(pObj.exp * 1000);
-      expiresAt = d.toISOString().replace('T',' ').replace('.000Z',' UTC');
+      expiresAt = d.toISOString().replace('T', ' ').replace('.000Z', ' UTC');
       isExpired = Date.now() > pObj.exp * 1000;
     }
     if (pObj.iat) {
       const d = new Date(pObj.iat * 1000);
-      issuedAt = d.toISOString().replace('T',' ').replace('.000Z',' UTC');
+      issuedAt = d.toISOString().replace('T', ' ').replace('.000Z', ' UTC');
     }
     return { header, payload, signature: parts[2], valid: true, error: '', algorithm: alg, isExpired, expiresAt, issuedAt };
-  } catch(e) { return { error: e.message, valid: false }; }
+  } catch (e) { return { error: e.message, valid: false }; }
 };
 
 mockGo.main.App.XMLFormat = async (input) => {
@@ -266,7 +300,7 @@ mockGo.main.App.XMLFormat = async (input) => {
     line = line.trim();
     if (!line) continue;
     if (line.match(/^<\/\w/)) indent--;
-    result += '  '.repeat(Math.max(0,indent)) + line + '\n';
+    result += '  '.repeat(Math.max(0, indent)) + line + '\n';
     if (line.match(/^<\w[^>]*[^/]>$/) && !line.match(/^<!/)) indent++;
   }
   return result.trim();
@@ -310,7 +344,7 @@ mockGo.main.App.HTMLFormat = async (input) => {
 mockGo.main.App.RegexTest = async (pattern, flags, input) => {
   if (!pattern) return { matches: [], count: 0, valid: true, error: '' };
   try {
-    const re = new RegExp(pattern, 'g' + flags.replace('g',''));
+    const re = new RegExp(pattern, 'g' + flags.replace('g', ''));
     const matches = [];
     let m;
     re.lastIndex = 0;
@@ -320,7 +354,7 @@ mockGo.main.App.RegexTest = async (pattern, flags, input) => {
       if (m[0].length === 0) re.lastIndex++;
     }
     return { matches, count: matches.length, valid: true, error: '' };
-  } catch(e) {
+  } catch (e) {
     return { matches: [], count: 0, valid: false, error: e.message };
   }
 };
@@ -341,7 +375,7 @@ mockGo.main.App.RegexExplain = async (pattern) => {
     [/\(([^)]+)\)/, '(...) = capture group'],
     [/\|/, '| = alternation (OR)'],
   ];
-  return rules.filter(([re]) => re.test(pattern)).map(([,d]) => d).join('\n');
+  return rules.filter(([re]) => re.test(pattern)).map(([, d]) => d).join('\n');
 };
 
 // Export new API methods

@@ -161,6 +161,18 @@ export default function App() {
           </nav>
 
           <div className={styles.sidebarFooter}>
+            <div style={{ padding: '0 4px', marginBottom: 8 }}>
+              <a
+                href="https://github.com/ehippo/gizmos/releases/latest"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.downloadBtn}
+              >
+                <Box size={14} />
+                <span>Download Desktop</span>
+              </a>
+            </div>
+
             <DropdownMenu
               trigger={
                 <button className={styles.themeBtn}>
