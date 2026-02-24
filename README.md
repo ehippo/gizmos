@@ -1,4 +1,4 @@
-# Gizmos
+# AxelGizmos
 
 > A lightweight, open-source developer toolkit built with **Wails + Go + React**.
 
@@ -54,7 +54,7 @@ wails dev
 # Build production binary
 wails build
 
-# Output: ./build/bin/DevForge (or DevForge.exe on Windows)
+# Output: ./build/bin/AxelGizmos (or AxelGizmos.exe on Windows)
 ```
 
 ### Build for specific platforms
@@ -73,7 +73,7 @@ wails build -platform windows/amd64
 ## 🗂 Project Structure
 
 ```
-devforge/
+gizmos/
 ├── main.go              # Wails entry point
 ├── app.go               # All Go backend tool implementations
 ├── wails.json           # Wails configuration

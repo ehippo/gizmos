@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     name: Build & Release
+    permissions:
+      contents: write
     strategy:
       matrix:
         include:
@@ -57,8 +59,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            AxelGizmos.exe
-            AxelGizmos.dmg
+          files: ${{ matrix.output }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
