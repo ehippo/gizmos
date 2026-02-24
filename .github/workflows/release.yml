@@ -62,7 +62,7 @@ jobs:
 
       - name: Build Linux
         if: matrix.os == 'ubuntu-latest'
-        run: wails build -platform ${{ matrix.platform }} -ldflags "-s -w"
+        run: wails build -platform ${{ matrix.platform }} -ldflags "-s -w" -tags webkit2_41
 
       - name: Rename Windows Output
         if: matrix.os == 'windows-latest'
