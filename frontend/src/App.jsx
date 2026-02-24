@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './styles/App.module.css';
-import TitleBar from './components/TitleBar';
+
 
 import Base64Tool from './tools/Base64Tool';
 import JSONTool from './tools/JSONTool';
@@ -107,7 +107,6 @@ export default function App() {
 
   return (
     <div className={styles.window}>
-      <TitleBar />
       <div className={styles.shell}>
         {/* Sidebar */}
         <aside className={styles.sidebar}>

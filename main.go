@@ -18,7 +18,7 @@ func main() {
 		Title:     "Axel Gizmos",
 		Width:     1280,
 		Height:    800,
-		Frameless: true,
+		Frameless: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
