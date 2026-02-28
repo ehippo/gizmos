@@ -3,7 +3,7 @@ import {
     ShieldCheck, Braces, Database, FileCode, Palette, Timer,
     Hash, Clock, Lock, Binary, Link2, CaseSensitive,
     ArrowLeftRight, Regex, Key, Type, FileDiff, Box,
-    GitPullRequest
+    GitPullRequest, Layout
 } from 'lucide-react';
 
 import Base64Tool from './tools/Base64Tool';
@@ -25,6 +25,7 @@ import JWTTool from './tools/JWTTool';
 import RegexTool from './tools/RegexTool';
 import HashTool from './tools/HashTool';
 import GitTool from './tools/GitTool';
+import KubectlTool from './tools/KubectlTool';
 
 // Version injected by Vite from package.json (see vite.config.js)
 export const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1.2.0';
@@ -147,6 +148,10 @@ export const TOOLS = [
             {
                 id: 'git', label: 'Git Helper', icon: <GitPullRequest size={18} />, desc: 'Command builder', component: GitTool, layout: 'full',
                 help: 'Builds common Git commands like undoing commits, squashing history, branch management, and cleanup. Reduces the need to memorize complex flag combinations.'
+            },
+            {
+                id: 'kubectl', label: 'Kubectl Helper', icon: <Layout size={18} />, desc: 'K8s command builder', component: KubectlTool, layout: 'full',
+                help: 'Interactive builder for common Kubernetes CLI commands. Covers context switching, resource viewing, workload deployment, logs, exec, and cluster management.'
             },
         ]
     },
