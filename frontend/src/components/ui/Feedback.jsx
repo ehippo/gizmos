@@ -95,14 +95,15 @@ export function Alert({ type = 'error', message, icon }) {
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            padding: '10px 14px',
-            borderRadius: 'var(--r-md)',
+            padding: '8px 12px',
+            borderRadius: 0,
             background: c.bg,
             border: `1px solid ${c.border}`,
+            borderLeft: `3px solid ${c.color}`,
             color: c.color,
             fontSize: 12,
-            fontFamily: 'var(--font-sans)',
-            fontWeight: 500,
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 400,
             lineHeight: 1.4
         }}>
             {icon || (type === 'error' ? '!' : type === 'info' ? <Info size={14} /> : '•')}

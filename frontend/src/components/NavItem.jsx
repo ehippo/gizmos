@@ -9,14 +9,16 @@ export default function NavItem({ tool, active, onClick }) {
             onClick={onClick}
             aria-current={active ? 'page' : undefined}
             title={tool.desc}
-            style={{ '--item-accent': tool.color }}
         >
-            <span className={styles.navIcon} style={{ color: active ? 'white' : tool.color }}>{tool.icon}</span>
+            <span className={styles.navIcon} style={{
+                color: active ? 'inherit' : tool.color,
+                opacity: active ? 1 : 0.8,
+            }}>
+                {tool.icon}
+            </span>
             <div className={styles.navText}>
-                <span className={styles.navLabel}>{tool.label}</span>
-                <span className={styles.navDesc}>{tool.desc}</span>
+                <span className={styles.navLabel}>{tool.label.toLowerCase()}.tool</span>
             </div>
-            {active && <div className={styles.navIndicator} style={{ background: tool.color, boxShadow: `0 0 10px ${tool.color}` }} />}
         </button>
     );
 }

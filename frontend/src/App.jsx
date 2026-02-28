@@ -51,6 +51,7 @@ export default function App() {
   }, []);
 
   const active = ALL_TOOLS.find(t => t.id === activeId);
+  const activeGroup = TOOLS.find(g => g.items.some(t => t.id === activeId));
   const ActiveComponent = active?.component;
 
   const filtered = search
@@ -79,17 +80,12 @@ export default function App() {
           <div className={styles.logoArea}>
             <div className={styles.logo}>
               <div style={{
-                width: 36, height: 36, borderRadius: 10, overflow: 'hidden',
-                background: 'var(--bg-card)', border: '1px solid var(--border-hi)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: 'var(--shadow-sm)'
+                width: 20, height: 20, overflow: 'hidden',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
               }}>
                 <img src={logo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span className={styles.logoText}>Axel Gizmos</span>
-                <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Developer Suite</span>
-              </div>
+              <span className={styles.logoText}>EXPLORER</span>
             </div>
           </div>
 
@@ -147,8 +143,8 @@ export default function App() {
                 rel="noopener noreferrer"
                 className={styles.downloadBtn}
               >
-                <Download size={14} />
-                <span>Download Desktop</span>
+                <Download size={12} />
+                <span>Download Desktop App</span>
               </a>
             ) : (
               <a
@@ -156,9 +152,9 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.downloadBtn}
-                style={{ background: 'var(--accent2)', boxShadow: '0 4px 15px rgba(62, 207, 176, 0.2)' }}
+                style={{ background: 'var(--accent2)' }}
               >
-                <Globe size={14} />
+                <Globe size={12} />
                 <span>Open In Browser</span>
               </a>
             )}
@@ -168,23 +164,17 @@ export default function App() {
                 <button className={styles.themeBtn} aria-label="Choose theme">
                   <span className={styles.themeSwatch} style={{ background: currentTheme?.swatch }} />
                   <span>{currentTheme?.label} Theme</span>
-                  <ChevronDown size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+                  <ChevronDown size={12} style={{ marginLeft: 'auto', opacity: 0.4 }} />
                 </button>
               }
               items={THEMES.map(t => ({
                 id: t.id,
                 label: t.label,
-                icon: <div style={{ width: 10, height: 10, borderRadius: '50%', background: t.swatch }} />,
+                icon: <div style={{ width: 9, height: 9, borderRadius: '50%', background: t.swatch }} />,
                 onClick: () => setTheme(t.id)
               }))}
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
-              <span className={styles.footerVersion}>v{APP_VERSION}</span>
-              <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--success)' }} />
-                <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-4)' }}>SYSTEM LIVE</span>
-              </div>
-            </div>
+            <span className={styles.footerVersion}>Axel Gizmos v{APP_VERSION}</span>
           </div>
         </aside>
 
@@ -196,18 +186,23 @@ export default function App() {
               onClick={() => setSidebarOpen(v => !v)}
               aria-label="Toggle navigation"
             >
-              {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
 
-            <div className={styles.breadcrumb}>
-              <div className={styles.breadIcon} style={{ color: active?.color }}>{active?.icon}</div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span className={styles.breadLabel}>{active?.label}</span>
-              </div>
-              <div className={styles.breadDesc}>{active?.desc}</div>
+            {/* VS Code-style active tab */}
+            <div className={styles.activeTab}>
+              <span className={styles.breadIcon} style={{ color: activeGroup?.color }}>{active?.icon}</span>
+              <span className={styles.breadLabel}>{active?.label?.toLowerCase()}.tool</span>
             </div>
 
-            <div style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
+            {/* Path breadcrumb */}
+            <div className={styles.topbarPath}>
+              <span style={{ color: 'var(--text-4)' }}>{activeGroup?.group?.toUpperCase()}</span>
+              <span style={{ color: 'var(--text-4)', margin: '0 4px' }}>›</span>
+              <span style={{ color: 'var(--text-3)' }}>{active?.desc}</span>
+            </div>
+
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center', paddingRight: 10 }}>
               <Tooltip content="About this tool">
                 <Btn
                   variant="ghost"
@@ -216,7 +211,7 @@ export default function App() {
                   aria-label="Show tool documentation"
                   aria-expanded={helpOpen}
                 >
-                  <Info size={18} />
+                  <Info size={15} />
                 </Btn>
               </Tooltip>
             </div>

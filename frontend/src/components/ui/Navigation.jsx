@@ -12,33 +12,35 @@ export function Tabs({ tabs, active, onChange, className }) {
         >
             <TabsPrimitive.List style={{
                 display: 'flex',
-                gap: 2,
-                padding: '3px',
-                background: 'var(--bg-input)',
-                borderRadius: 'var(--r-md)',
+                gap: 0,
+                background: 'var(--bg-card)',
+                borderRadius: 0,
                 width: 'fit-content',
-                border: '1px solid var(--border)'
+                border: '1px solid var(--border)',
+                overflow: 'hidden',
             }}>
-                {tabs.map(tab => (
+                {tabs.map((tab, i) => (
                     <TabsPrimitive.Trigger
                         key={tab.id}
                         value={tab.id}
                         className="ui-tabs-trigger"
                         style={{
-                            padding: '5px 14px',
-                            borderRadius: 6,
+                            padding: '3px 14px',
+                            borderRadius: 0,
                             fontSize: 12,
-                            fontWeight: 600,
+                            fontWeight: 400,
                             cursor: 'pointer',
                             border: 'none',
-                            background: active === tab.id ? 'var(--bg-card)' : 'transparent',
-                            color: active === tab.id ? 'var(--text-1)' : 'var(--text-3)',
-                            boxShadow: active === tab.id ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
-                            transition: 'all 0.2s ease',
-                            outline: 'none'
+                            borderRight: i < tabs.length - 1 ? '1px solid var(--border)' : 'none',
+                            background: active === tab.id ? 'var(--accent)' : 'transparent',
+                            color: active === tab.id ? '#ffffff' : 'var(--text-2)',
+                            transition: 'all 0.08s ease',
+                            outline: 'none',
+                            fontFamily: 'var(--font-sans)',
+                            lineHeight: '20px',
                         }}
                     >
-                        {tab.label}
+                        {tab.label.toLowerCase()}
                     </TabsPrimitive.Trigger>
                 ))}
             </TabsPrimitive.List>
@@ -52,20 +54,19 @@ export function DropdownMenu({ trigger, items }) {
             <DropdownMenuPrimitive.Trigger asChild>
                 {trigger}
             </DropdownMenuPrimitive.Trigger>
-
             <DropdownMenuPrimitive.Portal>
                 <DropdownMenuPrimitive.Content
                     style={{
-                        minWidth: 160,
+                        minWidth: 150,
                         background: 'var(--bg-card)',
-                        borderRadius: 'var(--r-md)',
-                        padding: '5px',
+                        borderRadius: 0,
+                        padding: '3px',
                         boxShadow: 'var(--shadow-md)',
                         border: '1px solid var(--border-hi)',
                         zIndex: 1000,
-                        animation: 'fadeIn 0.12s ease'
+                        animation: 'fadeIn 0.08s ease',
                     }}
-                    sideOffset={5}
+                    sideOffset={3}
                 >
                     {items.map((item, idx) => (
                         <DropdownMenuPrimitive.Item
@@ -75,14 +76,14 @@ export function DropdownMenu({ trigger, items }) {
                             style={{
                                 fontSize: 12,
                                 color: 'var(--text-2)',
-                                borderRadius: 'var(--r-sm)',
+                                borderRadius: 0,
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 8,
-                                padding: '8px 10px',
+                                gap: 7,
+                                padding: '5px 8px',
                                 cursor: 'pointer',
                                 outline: 'none',
-                                transition: 'background 0.1s',
+                                transition: 'background 0.06s',
                             }}
                         >
                             {item.icon}

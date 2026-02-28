@@ -33,8 +33,9 @@ export function ToolHeader({ children }) {
             alignItems: 'center',
             gap: 8,
             flexWrap: 'wrap',
-            minHeight: 32,
-            flexShrink: 0
+            flexShrink: 0,
+            paddingBottom: 8,
+            borderBottom: '1px solid var(--border)',
         }}>
             {children}
         </div>
