@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from './styles/App.module.css';
 
 import {
-  Search, ChevronDown, Info, X, Menu,
+  Search, ChevronDown, Info, X, Menu, Download, Globe
 } from 'lucide-react';
 
 import { Btn, Tooltip, DropdownMenu } from './components/ui';
@@ -17,6 +17,7 @@ export default function App() {
   const [helpOpen, setHelpOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const searchRef = useRef(null);
+  const isWails = window.go !== undefined;
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -139,6 +140,29 @@ export default function App() {
           </nav>
 
           <div className={styles.sidebarFooter}>
+            {!isWails ? (
+              <a
+                href="https://github.com/ehippo/gizmos/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.downloadBtn}
+              >
+                <Download size={14} />
+                <span>Download Desktop</span>
+              </a>
+            ) : (
+              <a
+                href="https://ehippo.github.io/gizmos/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.downloadBtn}
+                style={{ background: 'var(--accent2)', boxShadow: '0 4px 15px rgba(62, 207, 176, 0.2)' }}
+              >
+                <Globe size={14} />
+                <span>Open In Browser</span>
+              </a>
+            )}
+
             <DropdownMenu
               trigger={
                 <button className={styles.themeBtn} aria-label="Choose theme">
