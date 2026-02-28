@@ -3,7 +3,7 @@ import {
   Panel, Btn, CopyBtn, Toggle, Slider, Alert,
   ToolHeader, SplitPane, ToolGrid, Select
 } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { ShieldCheck, RefreshCw, KeyRound, ListFilter } from 'lucide-react';
 
 export default function PasswordTool() {

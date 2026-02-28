@@ -1,5 +1,5 @@
 import React from 'react';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import BaseTool from '../components/BaseTool';
 
 export default function SQLTool() {

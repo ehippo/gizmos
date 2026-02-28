@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Panel, Btn, CopyBtn, Alert, ToolHeader, ToolGrid, Select, PropertyTable, PropertyRow
 } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Box, RefreshCw, CheckCircle2, ListFilter, ClipboardList } from 'lucide-react';
 
 export default function UUIDTool() {

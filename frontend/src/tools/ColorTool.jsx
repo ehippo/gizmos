@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Panel, Btn, Alert, PropertyTable, PropertyRow, ToolGrid } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Palette, Pipette } from 'lucide-react';
 
 const PALETTE = [

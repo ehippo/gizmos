@@ -3,7 +3,7 @@ import {
   Panel, Btn, Alert, StatBadge, ToolHeader, SplitPane,
   PropertyTable, PropertyRow, Toggle, ToolGrid
 } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Clock, Zap, History } from 'lucide-react';
 
 export default function UnixTimeTool() {

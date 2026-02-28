@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Panel, CodeArea, Btn, CopyBtn, StatBadge, ToolHeader, ToolGrid
 } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Type, History, Trash2, ArrowRightLeft, Layers } from 'lucide-react';
 
 const TRANSFORMS = [

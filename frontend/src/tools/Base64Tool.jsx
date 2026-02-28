@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import BaseTool from '../components/BaseTool';
 import { Toggle } from '../components/ui';
 

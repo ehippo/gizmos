@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   Panel, SplitPane, CodeArea, Btn, CopyBtn, Tabs, Alert,
-  ToolHeader, PropertyTable, PropertyRow, StatBadge
+  ToolHeader, PropertyTable, PropertyRow, StatBadge, ToolLayout, TextInput
 } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Key, ShieldCheck, FileJson, Lock, AlertCircle, Search } from 'lucide-react';
 
 const DEFAULT_HEADER = JSON.stringify({ alg: 'HS256', typ: 'JWT' }, null, 2);
@@ -52,7 +52,7 @@ export default function JWTTool() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
         <Tabs
           tabs={[{ id: 'decode', label: 'Decoder' }, { id: 'encode', label: 'Encoder' }]}
@@ -67,17 +67,11 @@ export default function JWTTool() {
       {mode === 'decode' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
           {/* Input Layer */}
-          <Panel title="Encoded Token" accent>
-            <textarea
+          <Panel title="Encoded Token" accent style={{ flex: 1 }}>
+            <CodeArea
               value={token}
-              onChange={e => { setToken(e.target.value); decode(e.target.value); }}
+              onChange={val => { setToken(val); decode(val); }}
               placeholder="Paste your JWT token here (Header.Payload.Signature)..."
-              spellCheck="false"
-              style={{
-                width: '100%', height: 100, fontFamily: 'var(--font-mono)', fontSize: 13,
-                background: 'var(--bg-input)', border: '1px solid var(--border)',
-                color: 'var(--text-1)', borderRadius: 10, padding: 14, outline: 'none', resize: 'none', lineHeight: 1.5
-              }}
             />
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               {SAMPLE_TOKENS.map(s => (
@@ -97,12 +91,12 @@ export default function JWTTool() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Panel title="Token Information" accent={!!result}>
                 {result ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <PropertyTable>
                     <PropertyRow label="Algorithm" value={result.algorithm} accent />
                     <PropertyRow label="Status" value={result.isExpired ? 'Expired' : 'Live'} danger={result.isExpired} success={!result.isExpired} />
                     <PropertyRow label="Issued At" value={result.issuedAt || 'N/A'} />
                     <PropertyRow label="Expires" value={result.expiresAt || 'N/A'} />
-                  </div>
+                  </PropertyTable>
                 ) : (
                   <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-4)' }}>
                     <Lock size={40} opacity={0.1} style={{ marginBottom: 12 }} />
@@ -134,29 +128,22 @@ export default function JWTTool() {
         /* Encoder Mode */
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, flex: 1, minHeight: 0 }}>
-            <Panel title="Header Configuration">
+            <Panel title="Header Configuration" style={{ flex: 1 }}>
               <CodeArea value={encHeader} onChange={setEncHeader} />
             </Panel>
-            <Panel title="Payload Data">
+            <Panel title="Payload Data" style={{ flex: 1 }}>
               <CodeArea value={encPayload} onChange={setEncPayload} />
             </Panel>
           </div>
 
           <Panel title="Signing Controls">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-4)', textTransform: 'uppercase' }}>Secret Key (HMAC)</span>
-                <input
-                  type="text"
-                  value={encSecret}
-                  onChange={e => setEncSecret(e.target.value)}
-                  placeholder="HMAC secret key..."
-                  style={{
-                    width: '100%', padding: '10px 14px', borderRadius: 8, background: 'var(--bg-input)',
-                    border: '1px solid var(--border)', color: 'var(--text-1)', fontFamily: 'var(--font-mono)'
-                  }}
-                />
-              </div>
+              <TextInput
+                label="Secret Key (HMAC)"
+                value={encSecret}
+                onChange={setEncSecret}
+                placeholder="HMAC secret key..."
+              />
               <Btn variant="primary" size="lg" onClick={encode} style={{ height: 44, marginTop: 14 }}>
                 <ShieldCheck size={16} />
                 <span>Generate Token</span>
@@ -181,6 +168,7 @@ export default function JWTTool() {
           )}
         </div>
       )}
-    </div>
+    </ToolLayout>
   );
 }
+

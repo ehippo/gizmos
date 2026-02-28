@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Panel, Btn, CopyBtn, Alert, ToolHeader, ToolGrid, PropertyRow } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Search, Info, Settings2, History, Wand2 } from 'lucide-react';
 
 const PRESETS = [

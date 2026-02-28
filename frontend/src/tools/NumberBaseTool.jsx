@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Panel, Btn, CopyBtn, Alert, Tabs, ToolHeader, ToolGrid } from '../components/ui';
-import { API } from '../wailsbridge';
+import { API } from '../lib';
 import { Hash, Zap } from 'lucide-react';
 
 const BASES = [

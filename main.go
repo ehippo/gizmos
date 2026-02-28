@@ -18,13 +18,13 @@ func main() {
 		Title:     "Axel Gizmos",
 		Width:     1280,
 		Height:    800,
-		Frameless: true,
+		Frameless: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 13, G: 13, B: 18, A: 1},
 		OnStartup:        app.startup,
-		Bind: []interface{}{
+		Bind: []any{
 			app,
 		},
 	})

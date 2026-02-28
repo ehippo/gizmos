@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Panel, Btn, CopyBtn, ToolHeader, SplitPane, ToolGrid, PropertyTable, PropertyRow
+  Panel, Btn, CopyBtn, ToolHeader, SplitPane, ToolGrid, PropertyTable, PropertyRow, TextInput, ToolLayout
 } from '../components/ui';
 import { Timer, Wand2, CalendarDays, History, Info } from 'lucide-react';
 
@@ -108,23 +108,19 @@ export default function CronTool() {
 
   const PartInput = ({ idx, label, hint }) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
-      <input
-        type="text"
+      <TextInput
+        label={label}
         value={parts[idx] || '*'}
-        onChange={e => updatePart(idx, e.target.value)}
-        style={{
-          width: '100%', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: 18,
-          fontWeight: 700, color: 'var(--accent)', background: 'var(--bg-input)',
-          border: '1px solid var(--border)', borderRadius: 10, padding: '12px 0', outline: 'none'
-        }}
+        onChange={val => updatePart(idx, val)}
+        style={{ textAlign: 'center' }}
+        className="cron-part-input"
       />
       <span style={{ fontSize: 9, color: 'var(--text-4)', textAlign: 'center' }}>{hint}</span>
     </div>
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, fontWeight: 700 }}>
           <Timer size={18} />
@@ -169,12 +165,11 @@ export default function CronTool() {
                 <button
                   key={t.label}
                   onClick={() => setExpr(t.cron)}
+                  className="template-btn"
                   style={{
                     padding: '12px', textAlign: 'left', borderRadius: 10, border: expr === t.cron ? '1px solid var(--accent)' : '1px solid var(--border)',
                     background: expr === t.cron ? 'var(--accent-glow)' : 'var(--bg-card)', transition: 'all 0.15s', cursor: 'pointer'
                   }}
-                  onMouseEnter={e => { if (expr !== t.cron) e.currentTarget.style.background = 'var(--bg-hover)'; }}
-                  onMouseLeave={e => { if (expr !== t.cron) e.currentTarget.style.background = 'var(--bg-card)'; }}
                 >
                   <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', marginBottom: 4 }}>{t.label}</div>
                   <code style={{ fontSize: 13, color: 'var(--text-1)', fontFamily: 'var(--font-mono)' }}>{t.cron}</code>
@@ -228,6 +223,7 @@ export default function CronTool() {
           </Panel>
         </div>
       </div>
-    </div>
+    </ToolLayout>
   );
 }
+

@@ -1,98 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from './styles/App.module.css';
-import TitleBar from './components/TitleBar';
-
-import Base64Tool from './tools/Base64Tool';
-import JSONTool from './tools/JSONTool';
-import SQLTool from './tools/SQLTool';
-import XMLTool from './tools/XMLTool';
-import CSSTool from './tools/CSSTool';
-import HTMLTool from './tools/HTMLTool';
-import UnixTimeTool from './tools/UnixTimeTool';
-import CronTool from './tools/CronTool';
-import PasswordTool from './tools/PasswordTool';
-import UUIDTool from './tools/UUIDTool';
-import URLTool from './tools/URLTool';
-import ColorTool from './tools/ColorTool';
-import NumberBaseTool from './tools/NumberBaseTool';
-import TextTool from './tools/TextTool';
-import DiffTool from './tools/DiffTool';
-import JWTTool from './tools/JWTTool';
-import RegexTool from './tools/RegexTool';
 
 import {
-  ShieldCheck, Braces, Database, FileCode, Palette, Timer,
-  Hash, Clock, Lock, Binary, Link2, CaseSensitive,
-  ArrowLeftRight, Regex, Key, Type, FileDiff, Box,
-  Search, ChevronDown, Info
+  Search, ChevronDown, Info, X, Menu,
 } from 'lucide-react';
 
 import { Btn, Tooltip, DropdownMenu } from './components/ui';
-
-const TOOLS = [
-  {
-    group: 'Encoders',
-    items: [
-      { id: 'base64', label: 'Base64', icon: <ArrowLeftRight size={18} />, desc: 'Encode & decode', component: Base64Tool, layout: 'full' },
-      { id: 'url', label: 'URL', icon: <Link2 size={18} />, desc: 'Encode & decode', component: URLTool, layout: 'full' },
-      { id: 'jwt', label: 'JWT', icon: <Key size={18} />, desc: 'Decode & inspect', component: JWTTool, layout: 'full' },
-    ]
-  },
-  {
-    group: 'Formatters',
-    items: [
-      { id: 'json', label: 'JSON', icon: <Braces size={18} />, desc: 'Format & validate', component: JSONTool, layout: 'full' },
-      { id: 'sql', label: 'SQL', icon: <Database size={18} />, desc: 'Format & beautify', component: SQLTool, layout: 'full' },
-      { id: 'xml', label: 'XML', icon: <FileCode size={18} />, desc: 'Format & validate', component: XMLTool, layout: 'full' },
-      { id: 'css', label: 'CSS', icon: <Palette size={18} />, desc: 'Format & minify', component: CSSTool, layout: 'full' },
-      { id: 'html', label: 'HTML', icon: <FileCode size={18} />, desc: 'Format & prettify', component: HTMLTool, layout: 'full' },
-    ]
-  },
-  {
-    group: 'Converters',
-    items: [
-      { id: 'unix', label: 'Unix Time', icon: <Clock size={18} />, desc: 'Timestamp converter', component: UnixTimeTool, layout: 'compact' },
-      { id: 'color', label: 'Color', icon: <Palette size={18} />, desc: 'HEX · RGB · HSL', component: ColorTool, layout: 'compact' },
-      { id: 'base', label: 'Number Base', icon: <Binary size={18} />, desc: 'DEC · HEX · BIN · OCT', component: NumberBaseTool, layout: 'compact' },
-    ]
-  },
-  {
-    group: 'Generators',
-    items: [
-      { id: 'cron', label: 'Cron', icon: <Timer size={18} />, desc: 'Visual builder', component: CronTool, layout: 'compact' },
-      { id: 'password', label: 'Password', icon: <Lock size={18} />, desc: 'Secure generator', component: PasswordTool, layout: 'compact' },
-      { id: 'uuid', label: 'UUID', icon: <Box size={18} />, desc: 'v4 generator', component: UUIDTool, layout: 'compact' },
-    ]
-  },
-  {
-    group: 'Text',
-    items: [
-      { id: 'text', label: 'Text Utils', icon: <Type size={18} />, desc: 'Transform & analyze', component: TextTool, layout: 'full' },
-      { id: 'diff', label: 'Diff', icon: <FileDiff size={18} />, desc: 'Side-by-side compare', component: DiffTool, layout: 'full' },
-      { id: 'regex', label: 'Regex', icon: <Regex size={18} />, desc: 'Test & explain', component: RegexTool, layout: 'full' },
-    ]
-  },
-];
-
-const ALL_TOOLS = TOOLS.flatMap(g => g.items);
-
-export const THEMES = [
-  { id: 'dark', label: 'Dark', swatch: '#7c6af7' },
-  { id: 'light', label: 'Light', swatch: '#6254e8' },
-  { id: 'midnight', label: 'Midnight', swatch: '#5b8ef7' },
-  { id: 'solarized', label: 'Solarized', swatch: '#2aa198' },
-  { id: 'mocha', label: 'Mocha', swatch: '#d4976a' },
-];
+import NavItem from './components/NavItem';
+import { TOOLS, ALL_TOOLS, THEMES, APP_VERSION } from './config.jsx';
+import logo from './assets/logo.png';
 
 export default function App() {
-  const [activeId, setActiveId] = useState('base64');
+  const [activeId, setActiveId] = useState(() => localStorage.getItem('ag-active') || 'base64');
   const [search, setSearch] = useState('');
   const [theme, setTheme] = useState(() => localStorage.getItem('ag-theme') || 'dark');
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('ag-theme', theme);
   }, [theme]);
+
+  // Persist active tool
+  useEffect(() => {
+    localStorage.setItem('ag-active', activeId);
+  }, [activeId]);
+
+  // Cmd/Ctrl+K focuses the search input
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Close sidebar on resize to desktop
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 768) setSidebarOpen(false);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const active = ALL_TOOLS.find(t => t.id === activeId);
   const ActiveComponent = active?.component;
@@ -105,19 +60,30 @@ export default function App() {
 
   const currentTheme = THEMES.find(t => t.id === theme);
 
+  const selectTool = useCallback((id) => {
+    setActiveId(id);
+    setSearch('');
+    setHelpOpen(false);
+    setSidebarOpen(false);
+  }, []);
+
   return (
-    <div className={styles.window}>
-      <TitleBar />
+    <div className={styles.window} data-mobile-menu={sidebarOpen}>
       <div className={styles.shell}>
+        {/* Mobile Overlay */}
+        {sidebarOpen && <div className={styles.sidebarOverlay} onClick={() => setSidebarOpen(false)} />}
+
         {/* Sidebar */}
-        <aside className={styles.sidebar}>
+        <aside className={styles.sidebar} data-open={sidebarOpen}>
           <div className={styles.logoArea}>
             <div className={styles.logo}>
               <div style={{
-                width: 32, height: 32, borderRadius: 8, background: 'var(--accent-glow)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--accent)30'
+                width: 36, height: 36, borderRadius: 10, overflow: 'hidden',
+                background: 'var(--bg-card)', border: '1px solid var(--border-hi)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: 'var(--shadow-sm)'
               }}>
-                <ShieldCheck size={20} color="var(--accent)" />
+                <img src={logo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span className={styles.logoText}>Axel Gizmos</span>
@@ -129,22 +95,29 @@ export default function App() {
           <div className={styles.searchWrap}>
             <Search size={14} className={styles.searchIcon} />
             <input
+              ref={searchRef}
               className={styles.searchInput}
               type="text"
-              placeholder="Filter tools..."
+              placeholder="Filter tools… (⌘K)"
               value={search}
               onChange={e => setSearch(e.target.value)}
+              aria-label="Filter tools"
             />
-            {search && <button className={styles.searchClear} onClick={() => setSearch('')}>×</button>}
+            {search && <button className={styles.searchClear} onClick={() => setSearch('')} aria-label="Clear search">×</button>}
           </div>
 
-          <nav className={styles.nav}>
+          {/* Navigation — keyboard-accessible */}
+          <nav className={styles.nav} aria-label="Tool navigation">
             {filtered ? (
               <div className={styles.navGroup}>
                 <div className={styles.navGroupLabel}>Search Results</div>
                 {filtered.map(tool => (
-                  <NavItem key={tool.id} tool={tool} active={activeId === tool.id}
-                    onClick={() => { setActiveId(tool.id); setSearch(''); }} />
+                  <NavItem
+                    key={tool.id}
+                    tool={tool}
+                    active={activeId === tool.id}
+                    onClick={() => selectTool(tool.id)}
+                  />
                 ))}
                 {filtered.length === 0 && <div className={styles.noResults}>No matches found</div>}
               </div>
@@ -153,8 +126,12 @@ export default function App() {
                 <div key={group.group} className={styles.navGroup}>
                   <div className={styles.navGroupLabel}>{group.group}</div>
                   {group.items.map(tool => (
-                    <NavItem key={tool.id} tool={tool} active={activeId === tool.id}
-                      onClick={() => setActiveId(tool.id)} />
+                    <NavItem
+                      key={tool.id}
+                      tool={{ ...tool, color: group.color }}
+                      active={activeId === tool.id}
+                      onClick={() => selectTool(tool.id)}
+                    />
                   ))}
                 </div>
               ))
@@ -164,7 +141,7 @@ export default function App() {
           <div className={styles.sidebarFooter}>
             <DropdownMenu
               trigger={
-                <button className={styles.themeBtn}>
+                <button className={styles.themeBtn} aria-label="Choose theme">
                   <span className={styles.themeSwatch} style={{ background: currentTheme?.swatch }} />
                   <span>{currentTheme?.label} Theme</span>
                   <ChevronDown size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
@@ -178,8 +155,8 @@ export default function App() {
               }))}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
-              <span className={styles.footerVersion}>v1.2.0-stable</span>
-              <div style={{ display: 'flex', gap: 4 }}>
+              <span className={styles.footerVersion}>v{APP_VERSION}</span>
+              <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                 <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--success)' }} />
                 <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-4)' }}>SYSTEM LIVE</span>
               </div>
@@ -190,8 +167,16 @@ export default function App() {
         {/* Main Content */}
         <main className={styles.main}>
           <header className={styles.topbar}>
+            <button
+              className={styles.menuBtn}
+              onClick={() => setSidebarOpen(v => !v)}
+              aria-label="Toggle navigation"
+            >
+              {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+
             <div className={styles.breadcrumb}>
-              <div className={styles.breadIcon}>{active?.icon}</div>
+              <div className={styles.breadIcon} style={{ color: active?.color }}>{active?.icon}</div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span className={styles.breadLabel}>{active?.label}</span>
               </div>
@@ -199,13 +184,44 @@ export default function App() {
             </div>
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
-              <Tooltip content="Documentation">
-                <Btn variant="ghost" size="icon" onClick={() => { }}>
+              <Tooltip content="About this tool">
+                <Btn
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setHelpOpen(v => !v)}
+                  aria-label="Show tool documentation"
+                  aria-expanded={helpOpen}
+                >
                   <Info size={18} />
                 </Btn>
               </Tooltip>
             </div>
           </header>
+
+          {/* Tool help panel — slides in below topbar */}
+          {helpOpen && active?.help && (
+            <div style={{
+              padding: '10px 20px',
+              background: 'var(--info-bg)',
+              borderBottom: '1px solid var(--info-border)',
+              display: 'flex',
+              gap: 12,
+              alignItems: 'flex-start',
+              animation: 'fadeIn 0.15s ease',
+            }}>
+              <Info size={14} style={{ color: 'var(--accent)', flexShrink: 0, marginTop: 2 }} />
+              <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6, flex: 1 }}>
+                {active.help}
+              </p>
+              <button
+                onClick={() => setHelpOpen(false)}
+                style={{ background: 'none', border: 'none', color: 'var(--text-3)', cursor: 'pointer', padding: 2, lineHeight: 1 }}
+                aria-label="Close help"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
 
           <div
             className={active?.layout === 'compact' ? styles.toolCompact : styles.toolArea}
@@ -216,18 +232,5 @@ export default function App() {
         </main>
       </div>
     </div>
-  );
-}
-
-function NavItem({ tool, active, onClick }) {
-  return (
-    <button className={styles.navItem} data-active={active} onClick={onClick}>
-      <span className={styles.navIcon}>{tool.icon}</span>
-      <div className={styles.navText}>
-        <span className={styles.navLabel}>{tool.label}</span>
-        <span className={styles.navDesc}>{tool.desc}</span>
-      </div>
-      {active && <div className={styles.navIndicator} />}
-    </button>
   );
 }
