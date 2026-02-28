@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
-    CodeArea, Btn, CopyBtn, Tabs, Alert, cn, ToolLayout
+    CodeArea, Btn, CopyBtn, Tabs, Alert, cn, ToolLayout, ToolHeader
 } from './ui';
 import { RefreshCw } from 'lucide-react';
 
@@ -88,23 +88,11 @@ export default function BaseTool({
     return (
         <ToolLayout>
             {/* ── Toolbar row ── */}
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                flexWrap: 'wrap',
-                paddingBottom: 8,
-                borderBottom: '1px solid var(--border)',
-                flexShrink: 0,
-            }}>
+            <ToolHeader>
                 {tabs.length > 0 && (
                     <Tabs tabs={tabs} active={activeTab} onChange={handleTabChange} />
                 )}
-                {options && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        {options}
-                    </div>
-                )}
+                {options}
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
                     {allowSwap && (
                         <Btn variant="ghost" size="sm" onClick={handleSwap} title="Swap input ↔ output">
@@ -116,7 +104,7 @@ export default function BaseTool({
                         Clear
                     </Btn>
                 </div>
-            </div>
+            </ToolHeader>
 
             {/* ── Input pane ── */}
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>

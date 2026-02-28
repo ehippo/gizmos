@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Panel, CodeArea, Btn, CopyBtn, StatBadge, ToolHeader, ToolGrid
+  Panel, CodeArea, Btn, CopyBtn, StatBadge, ToolHeader, ToolLayout, ToolGrid
 } from '../components/ui';
 import { API } from '../lib';
 import { Type, History, Trash2, ArrowRightLeft, Layers } from 'lucide-react';
@@ -46,11 +46,11 @@ export default function TextTool() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       {/* Header with Stats */}
       <ToolHeader>
         {stats ? (
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 4 }}>
             <StatBadge label="Chars" value={stats.characters} accent />
             <StatBadge label="Words" value={stats.words} />
             <StatBadge label="Lines" value={stats.lines} />
@@ -63,7 +63,7 @@ export default function TextTool() {
           </div>
         )}
 
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
           <Btn variant="ghost" size="sm" onClick={swap} title="Swap input and output">
             <ArrowRightLeft size={14} />
             <span>Swap</span>
@@ -149,6 +149,6 @@ export default function TextTool() {
           )}
         </div>
       </div>
-    </div>
+    </ToolLayout>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Panel, Btn, CopyBtn, Toggle, Slider, Alert,
-  ToolHeader, SplitPane, ToolGrid, Select
+  ToolHeader, SplitPane, ToolGrid, ToolLayout, Select
 } from '../components/ui';
 import { API } from '../lib';
 import { ShieldCheck, RefreshCw, KeyRound, ListFilter } from 'lucide-react';
@@ -58,12 +58,8 @@ export default function PasswordTool() {
   const strengthPct = strength ? (strength.score / strength.max) * 100 : 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
-        <div style={{ component: 'div', display: 'flex', alignItems: 'center', gap: 8, color: 'var(--accent)', fontWeight: 700 }}>
-          <ShieldCheck size={18} />
-          <span>Security Generator</span>
-        </div>
         <div style={{ marginLeft: 'auto' }}>
           <Btn variant="ghost" size="sm" onClick={() => { setPasswords([]); }}>Clear History</Btn>
         </div>
@@ -102,17 +98,17 @@ export default function PasswordTool() {
                 <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-1)' }}>{strength.label}</span>
                 <span style={{ fontSize: 11, color: 'var(--text-4)' }}>{strength.score} / {strength.max}</span>
               </div>
-              <div style={{ height: 6, background: 'var(--bg-input)', borderRadius: 10, overflow: 'hidden', marginBottom: 16 }}>
+              <div style={{ height: 4, background: 'var(--bg-input)', border: '1px solid var(--border)', overflow: 'hidden', marginBottom: 12 }}>
                 <div style={{
                   height: '100%', width: `${strengthPct}%`,
-                  background: strengthColor, borderRadius: 10,
-                  transition: 'all 0.3s ease', boxShadow: `0 0 10px ${strengthColor}40`
+                  background: strengthColor,
+                  transition: 'all 0.3s ease'
                 }} />
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {Object.entries(strength.checks).map(([k, v]) => (
                   <div key={k} style={{
-                    fontSize: 10, padding: '3px 8px', borderRadius: 6,
+                    fontSize: 10, padding: '3px 8px',
                     background: v ? 'var(--bg-active)' : 'transparent',
                     border: `1px solid ${v ? 'var(--border-hi)' : 'var(--border)'}`,
                     color: v ? 'var(--text-1)' : 'var(--text-4)',
@@ -131,18 +127,18 @@ export default function PasswordTool() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <Panel title="Primary Password" accent>
             <div style={{
-              padding: '24px 20px', background: 'var(--bg-input)', borderRadius: 'var(--r-md)',
-              border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 20
+              padding: '16px', background: 'var(--bg-input)',
+              border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 12
             }}>
               <code style={{
-                fontSize: 24, fontWeight: 700, color: 'var(--text-1)',
+                fontSize: 16, fontWeight: 700, color: 'var(--text-1)',
                 textAlign: 'center', wordBreak: 'break-all', fontFamily: 'var(--font-mono)',
                 letterSpacing: '0.05em'
               }}>
                 {password}
               </code>
               <div style={{ display: 'flex', gap: 10 }}>
-                <Btn variant="primary" style={{ flex: 1 }} onClick={() => generate()}>
+                <Btn variant="primary" size="sm" style={{ flex: 1 }} onClick={() => generate()}>
                   <RefreshCw size={14} />
                   <span>Regenerate</span>
                 </Btn>
@@ -152,7 +148,7 @@ export default function PasswordTool() {
           </Panel>
 
           <Panel title="Bulk Generator" style={{ flex: 1 }}>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+            <div style={{ display: 'flex', gap: 6, marginBottom: 8, alignItems: 'center' }}>
               <Select
                 value={count}
                 onChange={v => setCount(Number(v))}
@@ -163,8 +159,8 @@ export default function PasswordTool() {
                   { value: 50, label: '50 items' },
                 ]}
               />
-              <Btn variant="accent" onClick={generateBulk}>
-                <ListFilter size={14} />
+              <Btn variant="accent" size="sm" onClick={generateBulk}>
+                <ListFilter size={12} />
                 <span>Create Bulk</span>
               </Btn>
               {passwords.length > 0 && (
@@ -174,7 +170,7 @@ export default function PasswordTool() {
               )}
             </div>
 
-            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
               {passwords.length > 0 ? (
                 passwords.map((p, i) => (
                   <div key={i} style={{
@@ -197,6 +193,6 @@ export default function PasswordTool() {
           </Panel>
         </div>
       </div>
-    </div>
+    </ToolLayout>
   );
 }

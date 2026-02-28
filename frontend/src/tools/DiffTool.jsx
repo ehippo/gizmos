@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Panel, Btn, CopyBtn, ToolHeader, SplitPane, Alert } from '../components/ui';
+import { Panel, Btn, CopyBtn, ToolHeader, SplitPane, Alert, CodeArea, ToolLayout } from '../components/ui';
 import { FileDiff, Trash2, ArrowRightLeft } from 'lucide-react';
 
 // Word-level diff helper
@@ -116,14 +116,14 @@ export default function DiffTool() {
   const rNums = useMemo(() => { let n = 0; return diff.map(d => d.type === 'removed' ? null : ++n); }, [diff]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           {stats.added > 0 && <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--success)' }}>+{stats.added} added</span>}
           {stats.removed > 0 && <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--danger)' }}>−{stats.removed} removed</span>}
           {stats.modified > 0 && <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--warning)' }}>~{stats.modified} modified</span>}
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
           <Btn variant="ghost" size="sm" onClick={() => { const t = left; setLeft(right); setRight(t); }} title="Swap sides">
             <ArrowRightLeft size={14} />
             <span>Swap</span>
@@ -138,17 +138,17 @@ export default function DiffTool() {
       <SplitPane
         left={
           <Panel title="Original" actions={<CopyBtn text={left} />}>
-            <textarea
-              value={left} onChange={e => setLeft(e.target.value)} placeholder="Paste original text..."
-              style={{ flex: 1, background: 'var(--bg-input)', border: 'none', color: 'var(--text-1)', padding: 12, fontSize: 13, fontFamily: 'var(--font-mono)', outline: 'none', resize: 'none', lineHeight: 1.6 }}
+            <CodeArea
+              value={left} onChange={setLeft} placeholder="Paste original text..."
+              style={{ flex: 1 }}
             />
           </Panel>
         }
         right={
           <Panel title="Modified" actions={<CopyBtn text={right} />}>
-            <textarea
-              value={right} onChange={e => setRight(e.target.value)} placeholder="Paste modified text..."
-              style={{ flex: 1, background: 'var(--bg-input)', border: 'none', color: 'var(--text-1)', padding: 12, fontSize: 13, fontFamily: 'var(--font-mono)', outline: 'none', resize: 'none', lineHeight: 1.6 }}
+            <CodeArea
+              value={right} onChange={setRight} placeholder="Paste modified text..."
+              style={{ flex: 1 }}
             />
           </Panel>
         }
@@ -156,7 +156,7 @@ export default function DiffTool() {
 
       {diff.length > 0 && (
         <Panel title="Difference Viewer" style={{ flex: 2 }}>
-          <div style={{ flex: 1, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', background: 'var(--bg-card)' }}>
+          <div style={{ flex: 1, overflowY: 'auto', border: '1px solid var(--border)', background: 'var(--bg-card)' }}>
             {/* Header */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--bg-panel)', borderBottom: '1px solid var(--border)', fontSize: 10, fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-4)' }}>
               <div style={{ padding: '6px 48px', borderRight: '1px solid var(--border)' }}>Original Side</div>
@@ -202,6 +202,6 @@ export default function DiffTool() {
           </div>
         </Panel>
       )}
-    </div>
+    </ToolLayout>
   );
 }

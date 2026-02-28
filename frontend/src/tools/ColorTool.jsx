@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Panel, Btn, Alert, PropertyTable, PropertyRow, ToolGrid } from '../components/ui';
+import { Panel, Btn, Alert, PropertyTable, PropertyRow, ToolGrid, ToolLayout, TextInput, ToolHeader } from '../components/ui';
 import { API } from '../lib';
 import { Palette, Pipette } from 'lucide-react';
 
@@ -57,70 +57,68 @@ export default function ColorTool() {
   const textColor = result ? (luminance(result.hex) > 128 ? '#111' : '#fff') : '#fff';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
+      <ToolHeader>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
+          <Btn variant="ghost" size="sm" onClick={() => { setHex(''); setResult(null); setPickerHex('#7c6af7'); }}>Clear</Btn>
+        </div>
+      </ToolHeader>
       <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 12, flex: 1, minHeight: 0 }}>
         {/* Left Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <Panel title="Color Selection">
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16 }}>
-              <div style={{ position: 'relative', width: 64, height: 64, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)' }}>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ position: 'relative', width: 52, height: 52, overflow: 'hidden', border: '1px solid var(--border)', flexShrink: 0 }}>
                 <input
                   type="color"
                   value={pickerHex}
                   onChange={e => handlePicker(e.target.value)}
                   style={{
-                    position: 'absolute', top: -5, left: -5, width: 80, height: 80, border: 'none',
+                    position: 'absolute', top: -5, left: -5, width: 70, height: 70, border: 'none',
                     cursor: 'pointer', padding: 0, background: 'none',
                   }}
                 />
               </div>
               <div style={{ flex: 1 }}>
-                <input
-                  type="text"
+                <TextInput
                   value={hex}
-                  onChange={e => handleHex(e.target.value)}
+                  onChange={handleHex}
                   placeholder="#7c6af7"
-                  style={{
-                    width: '100%', fontFamily: 'var(--font-mono)', fontSize: 18, fontWeight: 700,
-                    background: 'var(--bg-input)', border: '1px solid var(--border)',
-                    color: 'var(--text-1)', borderRadius: 8, padding: '10px 12px', outline: 'none',
-                  }}
+                  mono
+                  style={{ width: '100%' }}
                 />
               </div>
             </div>
 
             {result && (
               <div style={{
-                height: 120, borderRadius: 12, border: '1px solid var(--border)',
+                height: 80, border: '1px solid var(--border)',
                 background: result.hex, display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center', gap: 4,
-                boxShadow: `0 8px 24px ${result.hex}40`
+                alignItems: 'center', justifyContent: 'center', gap: 2,
               }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 24, fontWeight: 800, color: textColor }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, color: textColor }}>
                   {result.hex.toUpperCase()}
                 </span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: textColor, opacity: 0.7, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: textColor, opacity: 0.7, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {luminance(result.hex) > 128 ? 'Light Color' : 'Dark Color'}
                 </span>
               </div>
             )}
 
-            {error && <Alert type="error" message={error} style={{ marginTop: 12 }} />}
+            {error && <Alert type="error" message={error} style={{ marginTop: 8 }} />}
           </Panel>
 
           <Panel title="Quick Palette">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 4 }}>
               {PALETTE.map(c => (
                 <button
                   key={c}
                   onClick={() => { setHex(c); convert(c); }}
                   title={c}
                   style={{
-                    aspectRatio: '1', width: '100%', borderRadius: 8, background: c, cursor: 'pointer',
-                    border: hex.toLowerCase() === c.toLowerCase() ? '2px solid var(--text-1)' : '1px solid rgba(0,0,0,0.1)',
-                    transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    transform: hex.toLowerCase() === c.toLowerCase() ? 'scale(1.1) translateY(-2px)' : 'scale(1)',
-                    boxShadow: hex.toLowerCase() === c.toLowerCase() ? `0 4px 12px ${c}60` : 'none',
+                    aspectRatio: '1', width: '100%', background: c, cursor: 'pointer',
+                    border: hex.toLowerCase() === c.toLowerCase() ? '2px solid var(--text-1)' : '1px solid rgba(0,0,0,0.15)',
+                    transition: 'opacity 0.1s',
                   }}
                 />
               ))}
@@ -162,6 +160,6 @@ export default function ColorTool() {
           </Panel>
         </div>
       </div>
-    </div>
+    </ToolLayout>
   );
 }

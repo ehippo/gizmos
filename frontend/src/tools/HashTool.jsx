@@ -144,10 +144,10 @@ export default function HashTool() {
                     pointerEvents: 'none'
                 }}>
                     <div style={{
-                        padding: '40px 60px', borderRadius: 16,
+                        padding: '32px 48px',
                         border: '2px dashed var(--accent)',
                         background: 'var(--accent-glow)',
-                        color: 'var(--accent)', fontSize: 18, fontWeight: 700,
+                        color: 'var(--accent)', fontSize: 14, fontWeight: 600,
                         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12
                     }}>
                         <Upload size={36} />
@@ -168,7 +168,6 @@ export default function HashTool() {
 
                 <Toggle
                     label="HMAC"
-                    desc="Keyed hash"
                     checked={hmacMode}
                     onChange={handleHmacToggle}
                 />
@@ -177,10 +176,9 @@ export default function HashTool() {
                     value={format}
                     onChange={handleFormatChange}
                     options={OUTPUT_FORMATS}
-                    label="Format"
                 />
 
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
                     <Btn variant="ghost" size="sm" onClick={handleClear} title="Clear all">
                         <Trash2 size={14} />
                         <span>Clear</span>
@@ -219,10 +217,10 @@ export default function HashTool() {
                         <Panel title="File" style={{ flex: 1 }}>
                             <div style={{
                                 flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                flexDirection: 'column', gap: 16, padding: 32,
-                                border: '2px dashed var(--border)', borderRadius: 'var(--r-md)',
+                                flexDirection: 'column', gap: 12, padding: 24,
+                                border: '2px dashed var(--border)',
                                 background: 'var(--bg-input)',
-                                transition: 'all 0.2s ease',
+                                transition: 'all 0.15s ease',
                                 cursor: 'pointer'
                             }}
                                 onClick={() => fileInputRef.current?.click()}
@@ -236,7 +234,7 @@ export default function HashTool() {
                                 {fileName ? (
                                     <>
                                         <FileText size={36} style={{ color: 'var(--accent)', opacity: 0.7 }} />
-                                        <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)' }}>{fileName}</span>
+                                        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-1)' }}>{fileName}</span>
                                         <span style={{ fontSize: 11, color: 'var(--text-4)' }}>
                                             {input.length.toLocaleString()} characters loaded
                                         </span>
@@ -274,12 +272,11 @@ export default function HashTool() {
                                         <div
                                             key={algo.id}
                                             style={{
-                                                padding: '12px 14px',
+                                                padding: '10px 12px',
                                                 background: 'var(--bg-input)',
                                                 border: '1px solid var(--border)',
-                                                borderRadius: 'var(--r-md)',
                                                 marginBottom: 4,
-                                                transition: 'all 0.15s ease',
+                                                transition: 'border-color 0.1s ease',
                                             }}
                                             onMouseEnter={e => {
                                                 e.currentTarget.style.borderColor = 'var(--accent)40';
@@ -304,7 +301,7 @@ export default function HashTool() {
                                                     </span>
                                                     <span style={{
                                                         fontSize: 9, padding: '1px 6px',
-                                                        background: 'var(--bg-active)', borderRadius: 4,
+                                                        background: 'var(--bg-active)',
                                                         color: 'var(--text-4)', fontFamily: 'var(--font-mono)'
                                                     }}>
                                                         {algo.bits}-bit

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Panel, Btn, CopyBtn, Alert, Tabs, ToolHeader, ToolGrid } from '../components/ui';
+import { Panel, Btn, CopyBtn, Alert, Tabs, ToolHeader, ToolGrid, ToolLayout, TextInput } from '../components/ui';
 import { API } from '../lib';
 import { Hash, Zap } from 'lucide-react';
 
@@ -32,24 +32,25 @@ export default function NumberBaseTool() {
     <div style={{
       background: active ? 'var(--accent-glow)' : 'var(--bg-input)',
       border: `1px solid ${active ? 'var(--accent)40' : 'var(--border)'}`,
-      borderRadius: 'var(--r-md)', padding: '16px',
-      display: 'flex', flexDirection: 'column', gap: 8,
+      padding: '10px 12px',
+      display: 'flex', flexDirection: 'column', gap: 6,
       position: 'relative',
-      transition: 'all 0.2s ease'
+      transition: 'all 0.15s ease'
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{
-          fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase',
+          fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
           color: active ? 'var(--accent)' : 'var(--text-4)',
+          fontFamily: 'var(--font-mono)',
         }}>
-          {label} (Base {base})
+          {label} (base {base})
         </span>
         <CopyBtn text={value} size="sm" />
       </div>
       <div style={{
-        fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 700,
+        fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
         color: active ? 'var(--accent)' : 'var(--text-1)',
-        wordBreak: 'break-all', lineHeight: 1.2,
+        wordBreak: 'break-all', lineHeight: 1.3,
       }}>
         {value}
       </div>
@@ -57,7 +58,7 @@ export default function NumberBaseTool() {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
         <Tabs
           tabs={BASES.map(b => ({ id: b.id, label: b.code }))}
@@ -75,17 +76,12 @@ export default function NumberBaseTool() {
         {/* Input Column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <Panel title={`${BASES.find(b => b.id === fromBase)?.label} Input`}>
-            <input
-              type="text"
+            <TextInput
               value={input}
-              onChange={e => handleInput(e.target.value)}
+              onChange={handleInput}
               placeholder={`Enter ${BASES.find(b => b.id === fromBase)?.label.toLowerCase()}...`}
-              style={{
-                width: '100%', padding: '12px 16px', borderRadius: 8, fontSize: 20,
-                fontFamily: 'var(--font-mono)', fontWeight: 700,
-                background: 'var(--bg-input)', border: '1px solid var(--border)',
-                color: 'var(--text-1)', outline: 'none',
-              }}
+              mono
+              style={{ width: '100%' }}
             />
             {error && <Alert type="error" message={error} style={{ marginTop: 12 }} />}
           </Panel>
@@ -128,6 +124,6 @@ export default function NumberBaseTool() {
           </div>
         </Panel>
       </div>
-    </div>
+    </ToolLayout>
   );
 }

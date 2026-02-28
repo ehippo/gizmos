@@ -32,7 +32,6 @@ export default function JSONTool() {
       process={process}
       options={
         <Select
-          label="Indentation"
           value={indent}
           onChange={v => setIndent(Number(v))}
           options={[

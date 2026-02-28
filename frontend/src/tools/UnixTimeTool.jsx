@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Panel, Btn, Alert, StatBadge, ToolHeader, SplitPane,
-  PropertyTable, PropertyRow, Toggle, ToolGrid
+  Panel, Btn, Alert, StatBadge, ToolHeader, SplitPane, ToolLayout,
+  PropertyTable, PropertyRow, Toggle, ToolGrid, TextInput
 } from '../components/ui';
 import { API } from '../lib';
 import { Clock, Zap, History } from 'lucide-react';
@@ -49,16 +49,14 @@ export default function UnixTimeTool() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Toggle
-            label="Live Updates"
-            checked={liveTick}
-            onChange={setLiveTick}
-          />
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+        <Toggle
+          label="Live Updates"
+          checked={liveTick}
+          onChange={setLiveTick}
+        />
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
           <Btn variant="ghost" size="sm" onClick={() => { setInput(''); setResult(null); setError(''); }}>
             Clear
           </Btn>
@@ -76,20 +74,19 @@ export default function UnixTimeTool() {
                   <StatBadge label="Unix Millis" value={now.unixMilli} />
                 </ToolGrid>
                 <div style={{
-                  marginTop: 16,
-                  padding: 16,
+                  marginTop: 10,
+                  padding: '10px 12px',
                   background: 'var(--bg-input)',
-                  borderRadius: 'var(--r-md)',
                   border: '1px solid var(--border)',
                   textAlign: 'center'
                 }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-3)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>UTC Date</div>
-                  <div style={{ fontSize: 24, fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)' }}>
+                  <div style={{ fontSize: 10, color: 'var(--text-3)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4, fontFamily: 'var(--font-mono)' }}>// utc date</div>
+                  <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)' }}>
                     {now.utc}
                   </div>
                 </div>
-                <Btn variant="accent" size="md" onClick={useNow} style={{ marginTop: 12, width: '100%' }}>
-                  <Zap size={14} />
+                <Btn variant="accent" size="sm" onClick={useNow} style={{ marginTop: 8, width: '100%' }}>
+                  <Zap size={12} />
                   <span>Use Current Timestamp</span>
                 </Btn>
               </Panel>
@@ -97,30 +94,21 @@ export default function UnixTimeTool() {
 
             {/* Input Panel */}
             <Panel title="Convert Timestamp">
-              <div style={{ display: 'flex', gap: 8 }}>
-                <input
-                  type="text"
-                  className="ui-input"
+              <div style={{ display: 'flex', gap: 6 }}>
+                <TextInput
                   value={input}
-                  onChange={e => { setInput(e.target.value); convert(e.target.value); }}
+                  onChange={val => { setInput(val); convert(val); }}
                   placeholder="Enter Unix (sec or ms)..."
-                  style={{
-                    flex: 1,
-                    padding: '10px 14px',
-                    borderRadius: 8,
-                    background: 'var(--bg-input)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-1)',
-                    fontFamily: 'var(--font-mono)'
-                  }}
+                  mono
+                  style={{ flex: 1 }}
                 />
-                <Btn variant="primary" onClick={() => convert(input)}>Convert</Btn>
+                <Btn variant="primary" size="sm" onClick={() => convert(input)}>Convert</Btn>
               </div>
-              {error && <Alert type="error" message={error} style={{ marginTop: 12 }} />}
+              {error && <Alert type="error" message={error} style={{ marginTop: 8 }} />}
             </Panel>
 
             <Panel title="Common Presets" style={{ flexShrink: 0 }}>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                 {[
                   { label: 'Unix Epoch', ts: 0 },
                   { label: 'Y2K', ts: 946684800 },
@@ -156,6 +144,6 @@ export default function UnixTimeTool() {
           </Panel>
         }
       />
-    </div>
+    </ToolLayout>
   );
 }

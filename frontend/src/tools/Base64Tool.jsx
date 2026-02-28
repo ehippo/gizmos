@@ -32,7 +32,6 @@ export default function Base64Tool() {
           label="URL-safe"
           checked={urlSafe}
           onChange={setUrlSafe}
-          desc="No padding, safe for URLs"
         />
       }
       samples={[

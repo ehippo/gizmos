@@ -7,11 +7,11 @@ export function StatBadge({ label, value, accent }) {
         <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
             background: 'var(--bg-input)', border: '1px solid var(--border)',
-            borderRadius: 'var(--r-md)', padding: '10px 16px', gap: 2, flex: '1 1 0',
-            minWidth: 80
+            padding: '8px 12px', gap: 2, flex: '1 1 0',
+            minWidth: 70
         }}>
             <span style={{
-                fontSize: 18,
+                fontSize: 15,
                 fontWeight: 700,
                 color: accent ? 'var(--accent)' : 'var(--text-1)',
                 fontFamily: 'var(--font-mono)'
@@ -35,7 +35,7 @@ export function PropertyTable({ children, className }) {
     return (
         <div
             className={cn('ui-property-table', className)}
-            style={{ borderRadius: 'var(--r-md)', overflow: 'hidden', border: '1px solid var(--border)' }}
+            style={{ overflow: 'hidden', border: '1px solid var(--border)' }}
         >
             {children}
         </div>

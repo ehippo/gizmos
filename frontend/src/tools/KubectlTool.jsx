@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
-    Panel, Btn, CopyBtn, TextInput, ToolLayout, Select, Toggle
+    Panel, Btn, CopyBtn, TextInput, ToolLayout, Select, Toggle, ToolHeader
 } from '../components/ui';
 import {
     Terminal, Info, Zap, CheckCircle, BookOpen, Box
@@ -44,6 +44,11 @@ export default function KubectlTool() {
 
     return (
         <ToolLayout>
+            <ToolHeader>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
+                    <Btn variant="ghost" size="sm" onClick={() => { setActiveRecipeId(RECIPES[0]?.id); setActiveCat(CATEGORIES[0]?.id); setFields({}); }}>Reset</Btn>
+                </div>
+            </ToolHeader>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 240px) 1fr', gap: 12, flex: 1, minHeight: 0 }}>
                 {/* Sidebar: Categories & Recipes */}
                 <aside style={{ display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
@@ -55,7 +60,7 @@ export default function KubectlTool() {
                                     onClick={() => setActiveCat(cat.id)}
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px',
-                                        borderRadius: 8, border: 'none', cursor: 'pointer',
+                                        borderRadius: 0, border: 'none', cursor: 'pointer',
                                         background: activeCat === cat.id ? 'var(--bg-active)' : 'transparent',
                                         color: activeCat === cat.id ? 'var(--accent)' : 'var(--text-2)',
                                         fontSize: 13, fontWeight: 600, textAlign: 'left', transition: 'all 0.15s'
@@ -75,7 +80,7 @@ export default function KubectlTool() {
                                     key={recipe.id}
                                     onClick={() => handleRecipeSelect(recipe)}
                                     style={{
-                                        padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)',
+                                        padding: '10px 12px', borderRadius: 0, border: '1px solid var(--border)',
                                         background: activeRecipeId === recipe.id ? 'var(--accent-glow)' : 'var(--bg-card)',
                                         textAlign: 'left', cursor: 'pointer', transition: 'all 0.15s'
                                     }}
@@ -95,13 +100,13 @@ export default function KubectlTool() {
                         <div style={{ marginBottom: 20 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                                 <div style={{
-                                    width: 32, height: 32, borderRadius: 8, background: 'var(--accent-glow)',
+                                    width: 32, height: 32, borderRadius: 0, background: 'var(--accent-glow)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)'
                                 }}>
                                     {CATEGORIES.find(c => c.id === activeCat)?.icon}
                                 </div>
                                 <div>
-                                    <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-1)', margin: 0 }}>
+                                    <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-1)', margin: 0 }}>
                                         {activeRecipe.label}
                                     </h3>
                                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -157,7 +162,7 @@ export default function KubectlTool() {
                                 })}
                             </div>
                         ) : (
-                            <div style={{ padding: '24px', textAlign: 'center', background: 'var(--bg-active)', borderRadius: 12, border: '1px dashed var(--border)' }}>
+                            <div style={{ padding: '24px', textAlign: 'center', background: 'var(--bg-active)', borderRadius: 0, border: '1px dashed var(--border)' }}>
                                 <CheckCircle size={20} style={{ color: 'var(--accent)', marginBottom: 8 }} />
                                 <div style={{ fontSize: 13, color: 'var(--text-2)', fontWeight: 600 }}>Ready to use!</div>
                                 <div style={{ fontSize: 12, color: 'var(--text-4)' }}>This command uses standard defaults with no extra fields.</div>
@@ -171,13 +176,13 @@ export default function KubectlTool() {
                                 </label>
                             </div>
                             <div style={{
-                                background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)',
+                                background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 0,
                                 padding: '12px 18px', display: 'flex', alignItems: 'center', gap: 12, position: 'relative',
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                             }}>
                                 <Terminal size={18} style={{ color: 'var(--text-4)' }} />
                                 <code style={{
-                                    flex: 1, fontSize: 14, fontWeight: 600, color: 'var(--accent)',
+                                    flex: 1, fontSize: 13, fontWeight: 600, color: 'var(--accent)',
                                     fontFamily: 'var(--font-mono)', overflowX: 'auto', whiteSpace: 'nowrap'
                                 }}>
                                     {generatedCommand}
@@ -190,7 +195,7 @@ export default function KubectlTool() {
                                     <Terminal size={14} />
                                     <span style={{ fontWeight: 700 }}>Execute Command</span>
                                 </Btn>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 12px', background: 'var(--bg-active)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 12px', background: 'var(--bg-active)', borderRadius: 0, border: '1px solid var(--border)' }}>
                                     <Info size={12} style={{ color: 'var(--accent)' }} />
                                     <span style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 500 }}>Terminal integration active</span>
                                 </div>

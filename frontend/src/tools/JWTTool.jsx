@@ -66,22 +66,27 @@ export default function JWTTool() {
 
       {mode === 'decode' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
-          {/* Input Layer */}
-          <Panel title="Encoded Token" accent style={{ flex: 1 }}>
+          {/* Input — same bare pattern as BaseTool */}
+          <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <span style={{ fontSize: 11, color: 'var(--text-4)', fontFamily: 'var(--font-mono)' }}>// encoded token</span>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
+                {SAMPLE_TOKENS.map(s => (
+                  <Btn key={s.label} variant="secondary" size="sm" onClick={() => { setToken(s.token); decode(s.token); }}>
+                    <Search size={12} />
+                    {s.label}
+                  </Btn>
+                ))}
+                <CopyBtn text={token} />
+              </div>
+            </div>
             <CodeArea
               value={token}
               onChange={val => { setToken(val); decode(val); }}
               placeholder="Paste your JWT token here (Header.Payload.Signature)..."
+              height={72}
             />
-            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-              {SAMPLE_TOKENS.map(s => (
-                <Btn key={s.label} variant="secondary" size="sm" onClick={() => { setToken(s.token); decode(s.token); }}>
-                  <Search size={12} />
-                  {s.label}
-                </Btn>
-              ))}
-            </div>
-          </Panel>
+          </div>
 
           {error && <Alert type="error" message={error} />}
 
@@ -144,8 +149,8 @@ export default function JWTTool() {
                 onChange={setEncSecret}
                 placeholder="HMAC secret key..."
               />
-              <Btn variant="primary" size="lg" onClick={encode} style={{ height: 44, marginTop: 14 }}>
-                <ShieldCheck size={16} />
+              <Btn variant="primary" size="sm" onClick={encode} style={{ marginTop: 8, width: '100%' }}>
+                <ShieldCheck size={13} />
                 <span>Generate Token</span>
               </Btn>
             </div>
@@ -156,8 +161,8 @@ export default function JWTTool() {
           {encOutput && (
             <Panel title="Generated JWT" success>
               <div style={{
-                padding: 16, background: 'var(--bg-input)', borderRadius: 'var(--r-md)',
-                border: '1px solid var(--success)30', display: 'flex', gap: 12, alignItems: 'center'
+                padding: '10px 12px', background: 'var(--bg-input)',
+                border: '1px solid var(--success-border)', display: 'flex', gap: 12, alignItems: 'center'
               }}>
                 <code style={{ flex: 1, fontSize: 13, fontFamily: 'var(--font-mono)', color: 'var(--text-1)', wordBreak: 'break-all', lineHeight: 1.5 }}>
                   {encOutput}

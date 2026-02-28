@@ -122,10 +122,6 @@ export default function CronTool() {
   return (
     <ToolLayout>
       <ToolHeader>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, fontWeight: 700 }}>
-          <Timer size={18} />
-          <span>Cron Schedule Builder</span>
-        </div>
         <div style={{ marginLeft: 'auto' }}>
           <Btn variant="ghost" size="sm" onClick={() => setExpr('* * * * *')}>Reset to Default</Btn>
         </div>
@@ -144,18 +140,18 @@ export default function CronTool() {
             </div>
 
             <div style={{
-              background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)',
-              padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12
+              background: 'var(--bg-input)', border: '1px solid var(--border)',
+              padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12
             }}>
-              <code style={{ flex: 1, fontSize: 24, fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--font-mono)', letterSpacing: '0.1em' }}>
+              <code style={{ flex: 1, fontSize: 18, fontWeight: 700, color: 'var(--accent)', fontFamily: 'var(--font-mono)', letterSpacing: '0.05em' }}>
                 {expr}
               </code>
               <CopyBtn text={expr} />
             </div>
 
-            <div style={{ marginTop: 16, display: 'flex', gap: 10, alignItems: 'center', color: 'var(--text-2)', background: 'var(--bg-panel)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
+            <div style={{ marginTop: 10, display: 'flex', gap: 10, alignItems: 'center', color: 'var(--text-2)', background: 'var(--bg-panel)', padding: '8px 12px', border: '1px solid var(--border)' }}>
               <Info size={14} style={{ color: 'var(--accent)' }} />
-              <span style={{ fontSize: 13, fontWeight: 500 }}>{desc}</span>
+              <span style={{ fontSize: 12, fontWeight: 500 }}>{desc}</span>
             </div>
           </Panel>
 
@@ -167,7 +163,7 @@ export default function CronTool() {
                   onClick={() => setExpr(t.cron)}
                   className="template-btn"
                   style={{
-                    padding: '12px', textAlign: 'left', borderRadius: 10, border: expr === t.cron ? '1px solid var(--accent)' : '1px solid var(--border)',
+                    padding: '10px', textAlign: 'left', border: expr === t.cron ? '1px solid var(--accent)' : '1px solid var(--border)',
                     background: expr === t.cron ? 'var(--accent-glow)' : 'var(--bg-card)', transition: 'all 0.15s', cursor: 'pointer'
                   }}
                 >
@@ -187,7 +183,7 @@ export default function CronTool() {
                 nextRuns.map((d, i) => (
                   <div key={i} style={{
                     padding: '8px 12px', background: i === 0 ? 'var(--bg-active)' : 'transparent',
-                    border: '1px solid var(--border)', borderRadius: 8, display: 'flex', gap: 10, alignItems: 'center'
+                    border: '1px solid var(--border)', display: 'flex', gap: 10, alignItems: 'center'
                   }}>
                     <CalendarDays size={12} style={{ color: i === 0 ? 'var(--accent)' : 'var(--text-4)' }} />
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -215,7 +211,7 @@ export default function CronTool() {
                 { sym: '/', desc: 'Step values (*/15)' }
               ].map(tip => (
                 <div key={tip.sym} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <code style={{ minWidth: 24, fontSize: 16, fontWeight: 800, color: 'var(--accent)' }}>{tip.sym}</code>
+                  <code style={{ minWidth: 24, fontSize: 13, fontWeight: 700, color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>{tip.sym}</code>
                   <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{tip.desc}</span>
                 </div>
               ))}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Panel, Btn, CopyBtn, Alert, ToolHeader, ToolGrid, Select, PropertyTable, PropertyRow
+  Panel, Btn, CopyBtn, Alert, ToolHeader, ToolGrid, ToolLayout, Select, PropertyTable, PropertyRow, TextInput
 } from '../components/ui';
 import { API } from '../lib';
 import { Box, RefreshCw, CheckCircle2, ListFilter, ClipboardList } from 'lucide-react';
@@ -35,12 +35,8 @@ export default function UUIDTool() {
   const partLabels = ['time_low', 'time_mid', 'time_hi', 'clock_seq', 'node'];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minHeight: 0 }}>
+    <ToolLayout>
       <ToolHeader>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, fontWeight: 600 }}>
-          <Box size={16} />
-          <span>UUID v4 Generator</span>
-        </div>
         <div style={{ marginLeft: 'auto' }}>
           <Btn variant="ghost" size="sm" onClick={() => { setUuids([]); setValidateInput(''); setIsValid(null); }}>
             Clear Workspace
@@ -53,14 +49,14 @@ export default function UUIDTool() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <Panel title="Single Generator" accent>
             <div style={{
-              padding: '24px 16px', background: 'var(--bg-input)', borderRadius: 'var(--r-md)',
-              border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16
+              padding: '16px', background: 'var(--bg-input)',
+              border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12
             }}>
-              <code style={{ fontSize: 22, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.02em', textAlign: 'center', wordBreak: 'break-all' }}>
+              <code style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.02em', textAlign: 'center', wordBreak: 'break-all', fontFamily: 'var(--font-mono)' }}>
                 {uuid}
               </code>
               <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-                <Btn variant="primary" onClick={gen} style={{ flex: 1 }}>
+                <Btn variant="primary" size="sm" onClick={gen} style={{ flex: 1 }}>
                   <RefreshCw size={14} />
                   <span>Generate New</span>
                 </Btn>
@@ -75,7 +71,7 @@ export default function UUIDTool() {
                 {parts.map((p, i) => (
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <div style={{
-                      padding: '2px 8px', borderRadius: 4, background: 'var(--bg-active)',
+                      padding: '2px 8px', background: 'var(--bg-active)',
                       border: '1px solid var(--border)', fontSize: 11, fontFamily: 'var(--font-mono)'
                     }}>
                       {p}
@@ -88,17 +84,13 @@ export default function UUIDTool() {
           </Panel>
 
           <Panel title="Validator" error={isValid === false} success={isValid === true}>
-            <input
-              type="text"
+            <TextInput
               value={validateInput}
-              onChange={e => validate(e.target.value)}
+              onChange={validate}
               placeholder="Paste UUID to validate..."
-              style={{
-                width: '100%', padding: '10px 14px', borderRadius: 8, fontSize: 14,
-                fontFamily: 'var(--font-mono)', background: 'var(--bg-input)',
-                border: `1px solid ${isValid === null ? 'var(--border)' : isValid ? 'var(--success)' : 'var(--danger)'}`,
-                color: 'var(--text-1)', outline: 'none'
-              }}
+              mono
+              error={isValid === false}
+              style={{ width: '100%' }}
             />
             {isValid !== null && (
               <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: isValid ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
@@ -111,7 +103,7 @@ export default function UUIDTool() {
 
         {/* Right column: Bulk */}
         <Panel title="Bulk Generator" style={{ flex: 1 }}>
-          <ToolHeader style={{ marginBottom: 12 }}>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 8 }}>
             <Select
               value={count}
               onChange={v => setCount(Number(v))}
@@ -122,21 +114,21 @@ export default function UUIDTool() {
                 { value: 100, label: '100 items' },
               ]}
             />
-            <Btn variant="accent" onClick={genBulk}>
-              <ListFilter size={14} />
+            <Btn variant="accent" size="sm" onClick={genBulk}>
+              <ListFilter size={12} />
               <span>Generate Bulk</span>
             </Btn>
             {uuids.length > 0 && (
               <Btn variant="ghost" size="sm" onClick={() => {
                 navigator.clipboard.writeText(uuids.join('\n'));
               }}>
-                <ClipboardList size={14} />
+                <ClipboardList size={12} />
                 <span>Copy All</span>
               </Btn>
             )}
-          </ToolHeader>
+          </div>
 
-          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
             {uuids.length > 0 ? (
               uuids.map((u, i) => (
                 <div key={i} style={{
@@ -158,6 +150,6 @@ export default function UUIDTool() {
           </div>
         </Panel>
       </div>
-    </div>
+    </ToolLayout>
   );
 }
