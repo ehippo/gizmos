@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
-    Panel, Btn, CopyBtn, ToolHeader, TextInput, ToolLayout, Select
+    Panel, Btn, CopyBtn, ToolHeader, TextInput, ToolLayout, Select, Toggle
 } from '../components/ui';
 import {
     GitPullRequest, Terminal, Info, Zap, CheckCircle, BookOpen
@@ -8,7 +8,7 @@ import {
 import { CATEGORIES, RECIPES, getGuideContent, getHabitContent } from './GitTool.data.jsx';
 
 export default function GitTool() {
-    const [activeCat, setActiveCat] = useState('setup');
+    const [activeCat, setActiveCat] = useState('workflow');
     const [activeRecipeId, setActiveRecipeId] = useState('clone');
     const [fields, setFields] = useState({});
 
@@ -44,12 +44,7 @@ export default function GitTool() {
 
     return (
         <ToolLayout>
-            <ToolHeader>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, fontWeight: 700 }}>
-                    <GitPullRequest size={18} />
-                    <span>Git CLI Helper</span>
-                </div>
-            </ToolHeader>
+
 
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 240px) 1fr', gap: 12, flex: 1, minHeight: 0 }}>
                 {/* Sidebar: Categories & Recipes */}
@@ -135,6 +130,19 @@ export default function GitTool() {
                                                 options={f.options}
                                                 onChange={val => handleFieldChange(f.id, val)}
                                             />
+                                        );
+                                    }
+
+                                    if (f.type === 'toggle') {
+                                        return (
+                                            <div key={f.id} style={{ margin: '4px 0' }}>
+                                                <Toggle
+                                                    label={f.label}
+                                                    checked={!!fields[f.id]}
+                                                    onChange={val => handleFieldChange(f.id, val)}
+                                                    desc={f.desc}
+                                                />
+                                            </div>
                                         );
                                     }
 

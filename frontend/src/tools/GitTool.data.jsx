@@ -4,7 +4,6 @@ import {
 } from 'lucide-react';
 
 export const CATEGORIES = [
-    { id: 'setup', label: 'Project Setup', icon: <Download size={16} /> },
     { id: 'workflow', label: 'Daily Workflow', icon: <Save size={16} /> },
     { id: 'branches', label: 'Branches', icon: <GitBranch size={16} /> },
     { id: 'commits', label: 'Commits', icon: <RotateCcw size={16} /> },
@@ -16,7 +15,7 @@ export const CATEGORIES = [
 export const RECIPES = [
     // SETUP
     {
-        category: 'setup',
+        category: 'workflow',
         id: 'clone',
         label: 'Clone Repository',
         desc: 'Clone a remote repository to your local machine. Use depth for a shallow clone (faster).',
@@ -42,25 +41,39 @@ export const RECIPES = [
         desc: 'Pull the latest changes from the remote repository to keep your workspace fresh.',
         fields: [
             { id: 'remote', label: 'Remote Name', defaultValue: 'origin', placeholder: 'origin' },
-            { id: 'branch', label: 'Remote Head Branch', placeholder: 'main' }
+            { id: 'branch', label: 'Remote Head Branch', placeholder: 'main' },
+            { id: 'rebase', label: 'Use Rebase', type: 'toggle', desc: 'Replay your commits on top of incoming changes' },
+            { id: 'prune', label: 'Prune Branches', type: 'toggle', desc: 'Remove remote-tracking references that no longer exist' }
         ],
-        command: (f) => `git pull ${f.remote || 'origin'} ${f.branch || '<remote_head_branch>'}`
+        command: (f) => `git pull ${f.rebase ? '--rebase ' : ''}${f.prune ? '--prune ' : ''}${f.remote || 'origin'} ${f.branch || '<remote_head_branch>'}`
     },
     {
         category: 'workflow',
         id: 'add',
         label: 'Stage Changes',
         desc: 'Add modified files to the staging area. Leave empty to stage all changes.',
-        fields: [{ id: 'files', label: 'Specific Files (Optional)', placeholder: 'src/App.js "file 2.txt"' }],
-        command: (f) => `git add ${f.files || '.'}`
+        fields: [
+            { id: 'files', label: 'Specific Files (Optional)', placeholder: 'src/App.js "file 2.txt"' },
+            { id: 'all', label: 'Stage All', type: 'toggle', desc: 'Equivalent to git add -A' }
+        ],
+        command: (f) => f.all ? 'git add -A' : `git add ${f.files || '.'}`
     },
     {
         category: 'workflow',
         id: 'commit',
         label: 'Commit Changes',
         desc: 'Wrap up your work with a descriptive commit message.',
-        fields: [{ id: 'msg', label: 'Commit Message', placeholder: 'feat: add login validation' }],
-        command: (f) => `git commit -m "${f.msg || '__commit__msg__'}"`
+        fields: [
+            { id: 'msg', label: 'Commit Message', placeholder: 'feat: add login validation' },
+            { id: 'all', label: 'Stage All First', type: 'toggle', desc: 'Stage modified and deleted files automatically (-a)' },
+            { id: 'amend', label: 'Amend Previous', type: 'toggle', desc: 'Overwrite the previous commit' }
+        ],
+        command: (f) => {
+            let flags = '';
+            if (f.all) flags += '-a ';
+            if (f.amend) flags += '--amend ';
+            return `git commit ${flags}-m "${f.msg || '__commit__msg__'}"`;
+        }
     },
     {
         category: 'workflow',
@@ -69,9 +82,16 @@ export const RECIPES = [
         desc: 'Push your commits to the remote repository. Often returns a PR link.',
         fields: [
             { id: 'remote', label: 'Remote Name', defaultValue: 'origin', placeholder: 'origin' },
-            { id: 'branch', label: 'Working Branch Name', placeholder: 'feature/login' }
+            { id: 'branch', label: 'Working Branch Name', placeholder: 'feature/login' },
+            { id: 'force', label: 'Force Push', type: 'toggle', desc: 'Overwrite remote history (Use with caution!)' },
+            { id: 'setUpstream', label: 'Set Upstream', type: 'toggle', desc: 'Link local branch to remote (-u)' }
         ],
-        command: (f) => `git push ${f.remote || 'origin'} ${f.branch || '<working_branchname>'}`
+        command: (f) => {
+            let flags = '';
+            if (f.force) flags += '--force ';
+            if (f.setUpstream) flags += '-u ';
+            return `git push ${flags}${f.remote || 'origin'} ${f.branch || '<working_branchname>'}`;
+        }
     },
 
     // BRANCHES
@@ -91,8 +111,11 @@ export const RECIPES = [
         id: 'checkout',
         label: 'Switch to Branch',
         desc: 'Quickly switch between existing local branches.',
-        fields: [{ id: 'name', label: 'Branch Name', placeholder: 'main' }],
-        command: (f) => `git checkout ${f.name || '<branch_name>'}`
+        fields: [
+            { id: 'name', label: 'Branch Name', placeholder: 'main' },
+            { id: 'force', label: 'Force Switch', type: 'toggle', desc: 'Discard local changes during switch' }
+        ],
+        command: (f) => `git checkout ${f.force ? '-f ' : ''}${f.name || '<branch_name>'}`
     },
     {
         category: 'branches',
@@ -114,8 +137,17 @@ export const RECIPES = [
         id: 'merge',
         label: 'Merge Branch',
         desc: 'Merge another branch into your current branch.',
-        fields: [{ id: 'branch', label: 'Source Branch', placeholder: 'feature/login' }],
-        command: (f) => `git merge ${f.branch || '<branch>'}`
+        fields: [
+            { id: 'branch', label: 'Source Branch', placeholder: 'feature/login' },
+            { id: 'noFf', label: 'No Fast-Forward', type: 'toggle', desc: 'Always create a merge commit' },
+            { id: 'squash', label: 'Squash Merge', type: 'toggle', desc: 'Combine all source commits into one' }
+        ],
+        command: (f) => {
+            let flags = '';
+            if (f.noFf) flags += '--no-ff ';
+            if (f.squash) flags += '--squash ';
+            return `git merge ${flags}${f.branch || '<branch>'}`;
+        }
     },
     {
         category: 'branches',
