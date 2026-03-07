@@ -1,13 +1,13 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "AxelGizmos",
-  "outputfilename": "AxelGizmos",
+  "name": "Gizmos",
+  "outputfilename": "Gizmos",
   "frontend:install": "pnpm install",
   "frontend:build": "pnpm run build",
   "frontend:dev:watcher": "pnpm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
-    "name": "Axel Gizmos",
+    "name": "Gizmos",
     "email": "alexander.lototsky@gmail.com"
   }
 }

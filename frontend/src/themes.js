@@ -1,0 +1,147 @@
+export const THEMES = {
+  vscode: {
+    label: 'VS Code Dark',
+    vars: {
+      '--bg0': '#1e1e1e',
+      '--bg1': '#252526',
+      '--bg2': '#2d2d2d',
+      '--bg3': '#3c3c3c',
+      '--bg4': '#464646',
+      '--border': '#3c3c3c',
+      '--border-light': '#555',
+      '--text0': '#d4d4d4',
+      '--text1': '#cccccc',
+      '--text2': '#9d9d9d',
+      '--text3': '#555',
+      '--accent': '#0e639c',
+      '--accent-hover': '#1177bb',
+      '--accent-light': '#1a3a5c',
+      '--accent-text': '#ffffff',
+      '--green': '#4ec9b0',
+      '--blue': '#569cd6',
+      '--yellow': '#dcdcaa',
+      '--orange': '#ce9178',
+      '--red': '#f44747',
+
+    },
+  },
+  monokai: {
+    label: 'Monokai',
+    vars: {
+      '--bg0': '#272822',
+      '--bg1': '#1e1f1c',
+      '--bg2': '#2d2e2b',
+      '--bg3': '#3e3d32',
+      '--bg4': '#49483e',
+      '--border': '#3e3d32',
+      '--border-light': '#75715e',
+      '--text0': '#f8f8f2',
+      '--text1': '#f8f8f2',
+      '--text2': '#75715e',
+      '--text3': '#49483e',
+      '--accent': '#a6e22e',
+      '--accent-hover': '#c5f244',
+      '--accent-light': '#2a3a12',
+      '--accent-text': '#272822',
+      '--green': '#a6e22e',
+      '--blue': '#66d9e8',
+      '--yellow': '#e6db74',
+      '--orange': '#fd971f',
+      '--red': '#f92672',
+
+    },
+  },
+  nord: {
+    label: 'Nord',
+    vars: {
+      '--bg0': '#2e3440',
+      '--bg1': '#272c36',
+      '--bg2': '#3b4252',
+      '--bg3': '#434c5e',
+      '--bg4': '#4c566a',
+      '--border': '#3b4252',
+      '--border-light': '#4c566a',
+      '--text0': '#eceff4',
+      '--text1': '#d8dee9',
+      '--text2': '#7b88a1',
+      '--text3': '#4c566a',
+      '--accent': '#5e81ac',
+      '--accent-hover': '#81a1c1',
+      '--accent-light': '#2a3a52',
+      '--accent-text': '#eceff4',
+      '--green': '#a3be8c',
+      '--blue': '#88c0d0',
+      '--yellow': '#ebcb8b',
+      '--orange': '#d08770',
+      '--red': '#bf616a',
+
+    },
+  },
+  light: {
+    label: 'Light',
+    vars: {
+      '--bg0': '#ffffff',
+      '--bg1': '#f3f3f3',
+      '--bg2': '#ebebeb',
+      '--bg3': '#e0e0e0',
+      '--bg4': '#c8c8c8',
+      '--border': '#d4d4d4',
+      '--border-light': '#bbb',
+      '--text0': '#1e1e1e',
+      '--text1': '#333333',
+      '--text2': '#6e6e6e',
+      '--text3': '#a0a0a0',
+      '--accent': '#0078d4',
+      '--accent-hover': '#006cbd',
+      '--accent-light': '#dbeafe',
+      '--accent-text': '#ffffff',
+      '--green': '#1a7f64',
+      '--blue': '#0070c0',
+      '--yellow': '#795e26',
+      '--orange': '#a31515',
+      '--red': '#cd3131',
+
+    },
+  },
+  solarized: {
+    label: 'Solarized Dark',
+    vars: {
+      '--bg0': '#002b36',
+      '--bg1': '#073642',
+      '--bg2': '#0a4050',
+      '--bg3': '#104e60',
+      '--bg4': '#1a6070',
+      '--border': '#0a4050',
+      '--border-light': '#2a6070',
+      '--text0': '#fdf6e3',
+      '--text1': '#eee8d5',
+      '--text2': '#657b83',
+      '--text3': '#3d5f6a',
+      '--accent': '#268bd2',
+      '--accent-hover': '#2aa1e8',
+      '--accent-light': '#0d3f5a',
+      '--accent-text': '#fdf6e3',
+      '--green': '#859900',
+      '--blue': '#268bd2',
+      '--yellow': '#b58900',
+      '--orange': '#cb4b16',
+      '--red': '#dc322f',
+
+    },
+  },
+}
+
+export function applyTheme(themeKey) {
+  const theme = THEMES[themeKey]
+  if (!theme) return
+  const root = document.documentElement
+  Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v))
+}
+
+export function saveTheme(themeKey) {
+  localStorage.setItem('gizmos-theme', themeKey)
+}
+
+export function getInitialTheme() {
+  return localStorage.getItem('gizmos-theme') || 'vscode'
+}

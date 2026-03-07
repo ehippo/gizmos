@@ -1,111 +1,127 @@
-# AxelGizmos
+# Gizmos
 
-A professional-grade developer toolkit built for speed, privacy, and precision. Available as both a lightweight **web app** and a native **desktop application**.
+A VSCode-style developer toolbox desktop app built with [Wails](https://wails.io) (Go + React). All processing happens locally — no data leaves your machine.
 
-[**Try the Web App**](https://ehippo.github.io/gizmos/) · [**Download Desktop Releases**](https://github.com/ehippo/gizmos/releases)
+![Gizmos screenshot](docs/screenshot.png)
 
----
+## Tools
 
-## The Modern Developer Suite
+| Group | Tool | Description |
+|-------|------|-------------|
+| **Encoders** | Base64 | Encode / decode text to Base64 |
+| | URL | Percent-encode / decode URL strings |
+| | JWT | Decode, create (HS256/384/512), and verify JWT tokens |
+| **Formatters** | JSON | Format + minify JSON with indent control |
+| | HTML / XML | Beautify HTML and XML |
+| | CSS | Beautify CSS |
+| | SQL | Format SQL with dialect selector (MySQL, Postgres, SQLite…) |
+| **Converters** | Timestamp | Convert Unix, ISO 8601, and human date strings |
+| | Calculator | Expression evaluator (`sqrt`, `^`, `sin`, `pi`…) + base converter |
+| | Color | Convert between HEX, RGB, RGBA, HSL with live picker |
+| **Generators** | Hash | SHA-1/256/384/512 for text and files (drag & drop) |
+| | Text Analyzer | Character, word, line, sentence, byte counts |
+| | Regexp | Live pattern tester with highlighted matches and match list |
+| | Diff | Line and word diff between two texts |
+| **DevOps** | Git Helper | Command builder for common Git operations |
+| | Kubectl Helper | Command builder for common kubectl operations |
 
-AxelGizmos provides a clean, high-performance interface for your daily technical tasks. Designed to be accessible everywhere, it balances the portability of the web with the power of a desktop app.
+## Prerequisites
 
-- **Client-Side Logic**: All processing is handled directly in your browser or local app instance. Your data never touches a server.
-- **Privacy First**: No telemetry, no cloud syncing, no data leakage. Precise tools for sensitive keys, logs, and internal data.
-- **Universal Access**: Use the [web version](https://ehippo.github.io/gizmos/) for quick tasks or install the **Wails-powered** desktop app for a native experience.
-- **Premium Aesthetics**: Choose from curated themes like Midnight, Mocha, and Solarized to match your workspace.
+| Tool | Version |
+|------|---------|
+| Go | ≥ 1.21 |
+| Node.js | ≥ 18 |
+| Wails CLI | v2 |
 
----
-
-## Technical Capabilities
-
-### 🔐 Encoders & Security
-- **Base64**: Robust encoding/decoding with URL-safe support.
-- **URL**: Precision handling of special characters and complex query strings.
-- **JWT Debugger**: Header and payload breakdown with expiration validation.
-- **Hash**: Support for MD5, SHA families, and HMAC computations.
-- **Password Generator**: High-entropy generation with configurable complexity.
-
-### 🛠️ Formatters
-- **JSON**: Logic-aware formatting with syntax validation and minification.
-- **SQL**: Clause-based formatting with indentation and keyword capitalization.
-- **XML / HTML**: Clean structure restoration for nested markup.
-- **CSS**: Minification and beautification for modern stylesheets.
-
-### 🔢 Converters & Math
-- **Unix Time**: Bi-directional human-time conversion with relative offsets.
-- **Color**: Advanced conversion between HEX, RGB, HSL, and RGBA with a visual palette.
-- **Number Base**: Seamless switching between Decimal, Hexadecimal, Binary, and Octal.
-
-### 📝 Development Utilities
-- **Regex Tester**: Real-time expression testing with match highlights and group capture.
-- **UUID**: Version 4 generation with bulk processing support.
-- **Cron**: Visual expression builder with next-run scheduling previews.
-- **Diff**: Side-by-side comparison with granular character highlighting.
-- **Text Utils**: Comprehensive suite for sorting, deduplication, and case transformation.
-
----
-
-## Interface
-
-### Base64 encoder/decoder
-![Base64 encoder/decoder](./docs/app1.png)
-
-| JWT encoder/decoder | Timestamp converter |
-| :---: | :---: |
-| <img src="./docs/app2.png" width="400" /> | <img src="./docs/app3.png" width="400" /> |
-
----
-
-## Technology Stack
-
-- **Frontend**: React 19, Lucide Icons, Vanilla CSS.
-- **Desktop Wrapper**: [Wails v2](https://wails.io/) (Go runtime).
-- **Logic**: 100% JavaScript (runs client-side for both Web and Desktop).
-
----
-
-## Getting Started (Local Development)
-
-### Prerequisites
-- Go 1.25+
-- Node.js 24+
-- Wails CLI v2
-
-### Installation
 ```bash
-# Clone
-git clone https://github.com/ehippo/gizmos.git
-cd gizmos
-
-# Install Dependencies
-cd frontend && npm install
+go install github.com/wailsapp/wails/v2/cmd/wails@latest
 ```
 
-### Run and Build
+## Development
+
 ```bash
-# Web Development
-cd frontend && npm run dev
-
-# Desktop Development
-wails dev
-
-# Production Desktop Build
-wails build
+cd frontend && npm install && cd ..
+wails dev          # hot-reload dev server
 ```
 
----
+## Build
 
-## Contribution
+```bash
+wails build        # → ./build/bin/Gizmos
+```
 
-AxelGizmos is built for developers. We welcome new tools and performance optimizations.
+## Project structure
 
-1.  Logic should be implemented within the React components in `frontend/src/tools/`.
-2.  Register your new tool in `frontend/src/App.jsx`.
-3.  Ensure your tool follows the `BaseTool` pattern for consistent UI/UX.
+```
+gizmos/
+├── main.go
+├── app.go                    # Go app struct (minimal — all logic is frontend)
+├── wails.json
+├── go.mod
+└── frontend/
+    └── src/
+        ├── App.jsx           # Sidebar nav, theme switching, tool routing
+        ├── lib.js            # Pure utility functions (no React)
+        ├── themes.js         # 5 CSS-var themes
+        ├── styles.css        # Design tokens, layout, component styles
+        ├── components/
+        │   ├── ui.jsx        # CopyButton, IconButton, KVGrid, Toggle, Field, StatusBadge, ToolShell
+        │   └── RecipeTool.jsx  # Shared command-builder for Git / Kubectl
+        └── tools/            # One file per tool (or group)
+            ├── Encoder.jsx   # Base64Tool + URLTool
+            ├── JWT.jsx
+            ├── Formatter.jsx # JsonFormatterTool + HtmlFormatterTool + …
+            ├── Timestamp.jsx
+            ├── Calculator.jsx
+            ├── Color.jsx
+            ├── Hash.jsx
+            ├── Text.jsx
+            ├── Regexp.jsx
+            ├── Diff.jsx
+            ├── Git.jsx
+            └── Kubectl.jsx
+```
 
----
+## Adding a new tool
 
-## License
+1. Create `frontend/src/tools/MyTool.jsx` — export a default React component with no required props.
+2. Add a row to the `TOOLS` array in `App.jsx`:
+   ```js
+   { id: 'mytool', label: 'My Tool', icon: SomeIcon, component: MyTool, group: 'Converters' }
+   ```
+3. That's it. No routing config, no context boilerplate.
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+### Tool component contract
+
+```jsx
+// Minimal tool skeleton
+import { ToolShell } from '../components/ui'
+
+export default function MyTool() {
+  return (
+    <ToolShell title="My Tool">
+      {/* your content */}
+    </ToolShell>
+  )
+}
+```
+
+Available UI primitives from `components/ui.jsx`:
+
+| Component | Props | Use for |
+|-----------|-------|---------|
+| `ToolShell` | `title` | Outer wrapper — always use this |
+| `Field` | `label, action?, grow?` | Labelled input/output area |
+| `Toggle` | `options, value, onChange` | Button-group selector |
+| `CopyButton` | `text` | Copy to clipboard |
+| `IconButton` | `icon, label, onClick, disabled?` | Any action button |
+| `KVGrid` | `rows: {key,value}[]` | Key-value result table with copy buttons |
+| `StatusBadge` | `ok, text` | Success / error inline badge |
+
+## Themes
+
+5 built-in themes (VSCode Dark, Monokai, Nord, Light, Solarized). All colours are CSS custom properties on `:root` — add a new theme by extending `themes.js`.
+
+## Contributing
+
+PRs welcome. Keep tools self-contained (all state local, no global store). Add pure functions to `lib.js` and import them — this keeps tools easy to test and reason about.
