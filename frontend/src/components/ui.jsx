@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Copy, Check, X, Minimize2 } from 'lucide-react'
+import { Copy, Check, X, Minimize2, AlertCircle } from 'lucide-react'
 
 export function CopyButton({ text, size = 13 }) {
   const [copied, setCopied] = useState(false)
@@ -59,6 +59,19 @@ export function Toggle({ options, value, onChange }) {
     </div>
   )
 }
+export function Checkbox({ label, checked, onChange }) {
+  return (
+    <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none', fontSize: '11px', whiteSpace: 'nowrap', flexShrink: 0 }}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        style={{ margin: 0 }}
+      />
+      <span>{label}</span>
+    </label>
+  )
+}
 
 export function Field({ label, children, action, grow }) {
   return (
@@ -73,7 +86,13 @@ export function Field({ label, children, action, grow }) {
 }
 
 export function StatusBadge({ ok, text }) {
-  return <span className={ok ? 'badge-ok' : 'badge-error'}>{text}</span>
+  const Icon = ok ? Check : AlertCircle
+  return (
+    <div className={ok ? 'badge-ok' : 'badge-error'} style={{ gap: 8 }}>
+      <Icon size={14} style={{ flexShrink: 0 }} />
+      <span>{text}</span>
+    </div>
+  )
 }
 
 export function ToolShell({ title, children }) {

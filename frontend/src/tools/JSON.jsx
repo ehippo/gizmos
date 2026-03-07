@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
+import { jsonrepair } from 'jsonrepair'
 import { jsonFormat, jsonMinify } from '../lib'
-import { CopyButton, Toggle, Field, StatusBadge, ToolShell } from '../components/ui'
+import { CopyButton, Toggle, Checkbox, Field, StatusBadge, ToolShell } from '../components/ui'
 import JsonTree from '../components/JsonTree'
 
 export default function JSONTool() {
@@ -9,18 +10,20 @@ export default function JSONTool() {
   const [error, setError] = useState('')
   const [indent, setIndent] = useState('2')
   const [view, setView] = useState('viewer')
+  const [repair, setRepair] = useState(false)
 
-  const run = useCallback((value, ind) => {
+  const run = useCallback((value, ind, rep) => {
     setError('')
     if (!value.trim()) {
       setOutput('')
       return
     }
     try {
+      const v = rep ? jsonrepair(value) : value
       if (ind === 'minify') {
-        setOutput(jsonMinify(value))
+        setOutput(jsonMinify(v))
       } else {
-        setOutput(jsonFormat(value, Number(ind)))
+        setOutput(jsonFormat(v, Number(ind)))
       }
     } catch (e) {
       setError(e.message)
@@ -30,11 +33,15 @@ export default function JSONTool() {
 
   const handleInput = (v) => {
     setInput(v)
-    run(v, indent)
+    run(v, indent, repair)
   }
   const handleIndent = (v) => {
     setIndent(v)
-    run(input, v)
+    run(input, v, repair)
+  }
+  const handleRepair = (v) => {
+    setRepair(v)
+    run(input, indent, v)
   }
 
   const parsedData = useMemo(() => {
@@ -66,11 +73,12 @@ export default function JSONTool() {
           <option value="minify">Minify</option>
         </select>
 
-        {output && <CopyButton text={output} />}
+        <div style={{ flex: 1 }} />
+        <Checkbox label="Fix JSON" checked={repair} onChange={handleRepair} />
       </div>
 
       <div className="split-row">
-        <Field label="Input JSON" grow>
+        <Field label="Input JSON" action={<CopyButton text={input} />} grow>
           <textarea
             className="flex-textarea"
             placeholder='{"key": "value"}'
@@ -80,27 +88,30 @@ export default function JSONTool() {
           />
         </Field>
 
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-          <Field label={view === 'viewer' ? 'Viewer' : 'Formatted JSON'} grow>
-            {view === 'viewer' && parsedData ? (
-              <JsonTree data={parsedData} />
-            ) : (
-              <textarea
-                className="flex-textarea output-text"
-                readOnly
-                value={output}
-                placeholder="Formatted JSON will appear here…"
-                spellCheck={false}
-              />
-            )}
-          </Field>
-          {error && (
-            <div style={{ marginTop: 8 }}>
-              <StatusBadge ok={false} text={error} />
-            </div>
+        <Field
+          label={view === 'viewer' ? 'Viewer' : 'Formatted JSON'}
+          action={<CopyButton text={output} />}
+          grow
+        >
+          {view === 'viewer' && parsedData ? (
+            <JsonTree data={parsedData} />
+          ) : (
+            <textarea
+              className="flex-textarea output-text"
+              readOnly
+              value={output}
+              placeholder="Formatted JSON will appear here…"
+              spellCheck={false}
+            />
           )}
-        </div>
+        </Field>
       </div>
+
+      {error && (
+        <div style={{ marginTop: 4, width: '100%' }}>
+          <StatusBadge ok={false} text={error} />
+        </div>
+      )}
     </ToolShell>
   )
 }

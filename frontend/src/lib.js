@@ -178,7 +178,7 @@ export function parseColor(input) {
   if (hsl) {
     const [hv, sv, lv] = [+hsl[1], +hsl[2] / 100, +hsl[3] / 100]
     a = hsl[4] !== undefined ? +hsl[4] : 1
-    ;({ r, g, b } = hslToRgb(hv, sv, lv))
+      ; ({ r, g, b } = hslToRgb(hv, sv, lv))
   }
 
   if (r === undefined) throw new Error('Unrecognized color format')
