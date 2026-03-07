@@ -1,10 +1,26 @@
 # Gizmos
 
-A VSCode-style developer toolbox desktop app built with [Wails](https://wails.io) (Go + React). All processing happens locally — no data leaves your machine.
+A professional-grade developer toolkit built for speed, privacy, and precision. Available as both a lightweight **web app** and a native **desktop application**.
 
-![Gizmos screenshot](docs/screenshot.png)
+[**Try the Web App**](https://ehippo.github.io/gizmos/) · [**Download Desktop Releases**](https://github.com/ehippo/gizmos/releases)
 
-## Tools
+<p align="center">
+  <img src="docs/app1.png" width="400" alt="Base64 Tool" />
+  <img src="docs/app2.png" width="400" alt="Git Helper Tool" />
+</p>
+<p align="center">
+  <img src="docs/app3.png" width="810" alt="Calculator Tool" />
+</p>
+
+## ✨ Features
+
+- 🛠️ **20+ Tools**: Encoders, formatters, generators, and more.
+- 🔍 **Command Palette**: `Cmd+K` (or `Ctrl+K`) to fuzzy search and switch tools instantly.
+- 🎨 **VSCode Themes**: 5 built-in themes (Dark, Monokai, Nord, Light, Solarized).
+- 📱 **Responsive Design**: Works great as a sidebar or a full-window app.
+- 🔒 **Privacy First**: All processing is 100% local. No telemetry, no cloud.
+
+## 🧰 Tools
 
 | Group | Tool | Description |
 |-------|------|-------------|
@@ -25,7 +41,9 @@ A VSCode-style developer toolbox desktop app built with [Wails](https://wails.io
 | **DevOps** | Git Helper | Command builder for common Git operations |
 | | Kubectl Helper | Command builder for common kubectl operations |
 
-## Prerequisites
+## 🚀 Getting Started
+
+### Prerequisites
 
 | Tool | Version |
 |------|---------|
@@ -37,91 +55,14 @@ A VSCode-style developer toolbox desktop app built with [Wails](https://wails.io
 go install github.com/wailsapp/wails/v2/cmd/wails@latest
 ```
 
-## Development
+### Development
 
 ```bash
-cd frontend && npm install && cd ..
 wails dev          # hot-reload dev server
 ```
 
-## Build
+### Build
 
 ```bash
 wails build        # → ./build/bin/Gizmos
 ```
-
-## Project structure
-
-```
-gizmos/
-├── main.go
-├── app.go                    # Go app struct (minimal — all logic is frontend)
-├── wails.json
-├── go.mod
-└── frontend/
-    └── src/
-        ├── App.jsx           # Sidebar nav, theme switching, tool routing
-        ├── lib.js            # Pure utility functions (no React)
-        ├── themes.js         # 5 CSS-var themes
-        ├── styles.css        # Design tokens, layout, component styles
-        ├── components/
-        │   ├── ui.jsx        # CopyButton, IconButton, KVGrid, Toggle, Field, StatusBadge, ToolShell
-        │   └── RecipeTool.jsx  # Shared command-builder for Git / Kubectl
-        └── tools/            # One file per tool (or group)
-            ├── Encoder.jsx   # Base64Tool + URLTool
-            ├── JWT.jsx
-            ├── Formatter.jsx # JsonFormatterTool + HtmlFormatterTool + …
-            ├── Timestamp.jsx
-            ├── Calculator.jsx
-            ├── Color.jsx
-            ├── Hash.jsx
-            ├── Text.jsx
-            ├── Regexp.jsx
-            ├── Diff.jsx
-            ├── Git.jsx
-            └── Kubectl.jsx
-```
-
-## Adding a new tool
-
-1. Create `frontend/src/tools/MyTool.jsx` — export a default React component with no required props.
-2. Add a row to the `TOOLS` array in `App.jsx`:
-   ```js
-   { id: 'mytool', label: 'My Tool', icon: SomeIcon, component: MyTool, group: 'Converters' }
-   ```
-3. That's it. No routing config, no context boilerplate.
-
-### Tool component contract
-
-```jsx
-// Minimal tool skeleton
-import { ToolShell } from '../components/ui'
-
-export default function MyTool() {
-  return (
-    <ToolShell title="My Tool">
-      {/* your content */}
-    </ToolShell>
-  )
-}
-```
-
-Available UI primitives from `components/ui.jsx`:
-
-| Component | Props | Use for |
-|-----------|-------|---------|
-| `ToolShell` | `title` | Outer wrapper — always use this |
-| `Field` | `label, action?, grow?` | Labelled input/output area |
-| `Toggle` | `options, value, onChange` | Button-group selector |
-| `CopyButton` | `text` | Copy to clipboard |
-| `IconButton` | `icon, label, onClick, disabled?` | Any action button |
-| `KVGrid` | `rows: {key,value}[]` | Key-value result table with copy buttons |
-| `StatusBadge` | `ok, text` | Success / error inline badge |
-
-## Themes
-
-5 built-in themes (VSCode Dark, Monokai, Nord, Light, Solarized). All colours are CSS custom properties on `:root` — add a new theme by extending `themes.js`.
-
-## Contributing
-
-PRs welcome. Keep tools self-contained (all state local, no global store). Add pure functions to `lib.js` and import them — this keeps tools easy to test and reason about.

@@ -15,13 +15,13 @@ jobs:
         include:
           - os: windows-latest
             platform: windows/amd64
-            output: AxelGizmos.exe
+            output: Gizmos.exe
           - os: macos-latest
             platform: darwin/universal
-            output: AxelGizmos.dmg
+            output: Gizmos.dmg
           - os: ubuntu-latest
             platform: linux/amd64
-            output: AxelGizmos
+            output: Gizmos
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -63,7 +63,7 @@ jobs:
         run: |
           wails build -platform ${{ matrix.platform }} -ldflags "-s -w"
           # Create DMG
-          hdiutil create -volname "AxelGizmos" -srcfolder "build/bin/AxelGizmos.app" -ov -format UDZO AxelGizmos.dmg
+          hdiutil create -volname "Gizmos" -srcfolder "build/bin/Gizmos.app" -ov -format UDZO Gizmos.dmg
 
       - name: Build Linux
         if: matrix.os == 'ubuntu-latest'
@@ -71,11 +71,11 @@ jobs:
 
       - name: Rename Windows Output
         if: matrix.os == 'windows-latest'
-        run: mv build/bin/AxelGizmos.exe .
+        run: mv build/bin/Gizmos.exe .
 
       - name: Rename Linux Output
         if: matrix.os == 'ubuntu-latest'
-        run: mv build/bin/AxelGizmos .
+        run: mv build/bin/Gizmos .
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
