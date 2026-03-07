@@ -10,16 +10,26 @@ export default function Base64Tool() {
 
   const run = useCallback((value, m) => {
     setError('')
-    if (!value) { setOutput(''); return }
+    if (!value) {
+      setOutput('')
+      return
+    }
     try {
       setOutput(m === 'Encode' ? base64Encode(value) : base64Decode(value))
     } catch (e) {
-      setError(e.message); setOutput('')
+      setError(e.message)
+      setOutput('')
     }
   }, [])
 
-  const handleInput = v => { setInput(v); run(v, mode) }
-  const handleMode = m => { setMode(m); run(input, m) }
+  const handleInput = (v) => {
+    setInput(v)
+    run(v, mode)
+  }
+  const handleMode = (m) => {
+    setMode(m)
+    run(input, m)
+  }
 
   return (
     <ToolShell title="Base64 Encoder / Decoder">
@@ -30,7 +40,7 @@ export default function Base64Tool() {
             className="flex-textarea"
             placeholder={mode === 'Encode' ? 'Text to encode…' : 'Base64 to decode…'}
             value={input}
-            onChange={e => handleInput(e.target.value)}
+            onChange={(e) => handleInput(e.target.value)}
             spellCheck={false}
           />
         </Field>

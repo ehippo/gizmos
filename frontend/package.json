@@ -6,21 +6,23 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "diff": "^7.0.0",
+    "jose": "^5.9.6",
+    "js-beautify": "^1.15.1",
+    "lucide-react": "^0.469.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "lucide-react": "^0.469.0",
-    "diff": "^7.0.0",
-    "sql-formatter": "^15.4.0",
-    "js-beautify": "^1.15.1",
-    "jose": "^5.9.6"
+    "sql-formatter": "^15.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "prettier": "^3.8.1",
     "vite": "^6.0.5"
   }
 }

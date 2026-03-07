@@ -194,7 +194,9 @@ body {
   font-family: var(--font-ui);
   text-align: left;
   position: relative;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
 }
 
 .nav-item:hover {
@@ -302,8 +304,8 @@ body {
 
 /* ── Inputs ── */
 textarea,
-input[type="text"],
-input:not([type="color"]):not([type="range"]) {
+input[type='text'],
+input:not([type='color']):not([type='range']) {
   font-family: var(--font-mono);
   font-size: 12px;
   background: var(--bg0);
@@ -358,8 +360,6 @@ button {
   border-radius: var(--radius);
   font-family: var(--font-ui);
 }
-
-
 
 .btn-icon {
   background: transparent;
@@ -493,7 +493,7 @@ button {
   min-height: 0;
 }
 
-.split-row>* {
+.split-row > * {
   flex: 1;
 }
 
@@ -777,6 +777,91 @@ button {
   flex: 1;
 }
 
+/* ── JsonTree ───────────────────────────────────────────────────────────── */
+
+.json-tree-container {
+  flex: 1;
+  background: var(--bg0);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: auto;
+  padding: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  min-height: 100px;
+}
+
+.json-node {
+  display: flex;
+  flex-direction: column;
+}
+
+.json-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  padding: 1px 4px;
+  border-radius: 2px;
+  min-height: 22px;
+}
+
+.json-row.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.json-row.clickable:hover {
+  background: var(--bg2);
+}
+
+.json-icon {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+
+.json-key {
+  color: var(--blue);
+}
+
+.json-label {
+  color: var(--text3);
+  font-size: 11px;
+}
+
+.json-preview {
+  color: var(--text3);
+  margin-left: 6px;
+  font-style: italic;
+}
+
+.json-value.json-string {
+  color: var(--orange);
+}
+
+.json-value.json-number {
+  color: var(--green);
+}
+
+.json-value.json-boolean {
+  color: var(--blue);
+}
+
+.json-value.json-null {
+  color: var(--red);
+}
+
+.json-children {
+  display: flex;
+  flex-direction: column;
+}
+
 .diff-add {
   background: rgba(78, 201, 176, 0.08);
 }
@@ -915,7 +1000,9 @@ del.diff-word-del {
   border: 1px dashed var(--border);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   background: var(--bg1);
   min-height: 90px;
 }

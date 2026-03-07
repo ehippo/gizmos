@@ -47,12 +47,14 @@ export function KVGrid({ rows }) {
 export function Toggle({ options, value, onChange }) {
   return (
     <div className="toggle-row">
-      {options.map(opt => (
+      {options.map((opt) => (
         <button
           key={opt}
           className={'toggle-btn' + (value === opt ? ' active' : '')}
           onClick={() => onChange(opt)}
-        >{opt}</button>
+        >
+          {opt}
+        </button>
       ))}
     </div>
   )

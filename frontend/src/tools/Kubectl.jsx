@@ -1,4 +1,14 @@
-import { Container, Search, RefreshCw, Trash2, FileText, Terminal, ArrowRight, Scale, Eye } from 'lucide-react'
+import {
+  Container,
+  Search,
+  RefreshCw,
+  Trash2,
+  FileText,
+  Terminal,
+  ArrowRight,
+  Scale,
+  Eye,
+} from 'lucide-react'
 import RecipeTool from '../components/RecipeTool'
 
 const RECIPES = [
@@ -6,11 +16,18 @@ const RECIPES = [
     group: 'Pods',
     items: [
       {
-        id: 'get-pods', label: 'List pods', icon: Search,
+        id: 'get-pods',
+        label: 'List pods',
+        icon: Search,
         fields: [
           { id: 'ns', label: 'Namespace (blank = default)', placeholder: 'production' },
           { id: 'selector', label: 'Label selector (optional)', placeholder: 'app=nginx' },
-          { id: 'wide', label: 'Output', type: 'select', options: ['normal', 'wide', 'watch (-w)'] },
+          {
+            id: 'wide',
+            label: 'Output',
+            type: 'select',
+            options: ['normal', 'wide', 'watch (-w)'],
+          },
         ],
         build: ({ ns, selector, wide }) => {
           let cmd = 'kubectl get pods'
@@ -22,12 +39,19 @@ const RECIPES = [
         },
       },
       {
-        id: 'exec', label: 'Exec into pod', icon: Terminal,
+        id: 'exec',
+        label: 'Exec into pod',
+        icon: Terminal,
         fields: [
           { id: 'pod', label: 'Pod name', placeholder: 'nginx-7d4b9c8f6-xk2lp' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
           { id: 'container', label: 'Container (optional)', placeholder: 'nginx' },
-          { id: 'shell', label: 'Shell', type: 'select', options: ['/bin/sh', '/bin/bash', 'sh', 'bash'] },
+          {
+            id: 'shell',
+            label: 'Shell',
+            type: 'select',
+            options: ['/bin/sh', '/bin/bash', 'sh', 'bash'],
+          },
         ],
         build: ({ pod, ns, container, shell }) => {
           let cmd = `kubectl exec -it ${pod || '<pod-name>'}`
@@ -38,7 +62,9 @@ const RECIPES = [
         },
       },
       {
-        id: 'logs', label: 'View logs', icon: FileText,
+        id: 'logs',
+        label: 'View logs',
+        icon: FileText,
         fields: [
           { id: 'pod', label: 'Pod name', placeholder: 'nginx-7d4b9c8f6-xk2lp' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
@@ -58,7 +84,9 @@ const RECIPES = [
         },
       },
       {
-        id: 'delete-pod', label: 'Delete / restart pod', icon: Trash2,
+        id: 'delete-pod',
+        label: 'Delete / restart pod',
+        icon: Trash2,
         fields: [
           { id: 'pod', label: 'Pod name', placeholder: 'nginx-7d4b9c8f6-xk2lp' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
@@ -77,7 +105,9 @@ const RECIPES = [
     group: 'Deployments',
     items: [
       {
-        id: 'rollout-restart', label: 'Rollout restart', icon: RefreshCw,
+        id: 'rollout-restart',
+        label: 'Rollout restart',
+        icon: RefreshCw,
         fields: [
           { id: 'name', label: 'Deployment name', placeholder: 'nginx-deployment' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
@@ -89,7 +119,9 @@ const RECIPES = [
         },
       },
       {
-        id: 'scale', label: 'Scale deployment', icon: Scale,
+        id: 'scale',
+        label: 'Scale deployment',
+        icon: Scale,
         fields: [
           { id: 'name', label: 'Deployment name', placeholder: 'nginx-deployment' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
@@ -102,7 +134,9 @@ const RECIPES = [
         },
       },
       {
-        id: 'set-image', label: 'Update image', icon: ArrowRight,
+        id: 'set-image',
+        label: 'Update image',
+        icon: ArrowRight,
         fields: [
           { id: 'deploy', label: 'Deployment', placeholder: 'nginx-deployment' },
           { id: 'container', label: 'Container name', placeholder: 'nginx' },
@@ -116,7 +150,9 @@ const RECIPES = [
         },
       },
       {
-        id: 'rollback', label: 'Rollback', icon: RefreshCw,
+        id: 'rollback',
+        label: 'Rollback',
+        icon: RefreshCw,
         fields: [
           { id: 'name', label: 'Deployment name', placeholder: 'nginx-deployment' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
@@ -135,9 +171,16 @@ const RECIPES = [
     group: 'Context & Config',
     items: [
       {
-        id: 'ctx-list', label: 'List / switch context', icon: Eye,
+        id: 'ctx-list',
+        label: 'List / switch context',
+        icon: Eye,
         fields: [
-          { id: 'action', label: 'Action', type: 'select', options: ['list contexts', 'current context', 'switch context'] },
+          {
+            id: 'action',
+            label: 'Action',
+            type: 'select',
+            options: ['list contexts', 'current context', 'switch context'],
+          },
           { id: 'ctx', label: 'Context name (for switch)', placeholder: 'prod-cluster' },
         ],
         build: ({ action, ctx }) => {
@@ -147,9 +190,16 @@ const RECIPES = [
         },
       },
       {
-        id: 'port-forward', label: 'Port forward', icon: ArrowRight,
+        id: 'port-forward',
+        label: 'Port forward',
+        icon: ArrowRight,
         fields: [
-          { id: 'resource', label: 'Resource type', type: 'select', options: ['pod', 'service', 'deployment'] },
+          {
+            id: 'resource',
+            label: 'Resource type',
+            type: 'select',
+            options: ['pod', 'service', 'deployment'],
+          },
           { id: 'name', label: 'Resource name', placeholder: 'nginx-7d4b9c8f6-xk2lp' },
           { id: 'local', label: 'Local port', placeholder: '8080' },
           { id: 'remote', label: 'Remote port', placeholder: '80' },
@@ -162,9 +212,25 @@ const RECIPES = [
         },
       },
       {
-        id: 'describe', label: 'Describe resource', icon: Search,
+        id: 'describe',
+        label: 'Describe resource',
+        icon: Search,
         fields: [
-          { id: 'kind', label: 'Kind', type: 'select', options: ['pod', 'deployment', 'service', 'ingress', 'node', 'pvc', 'configmap', 'secret'] },
+          {
+            id: 'kind',
+            label: 'Kind',
+            type: 'select',
+            options: [
+              'pod',
+              'deployment',
+              'service',
+              'ingress',
+              'node',
+              'pvc',
+              'configmap',
+              'secret',
+            ],
+          },
           { id: 'name', label: 'Name', placeholder: 'my-resource' },
           { id: 'ns', label: 'Namespace', placeholder: 'default' },
         ],

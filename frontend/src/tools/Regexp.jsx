@@ -6,12 +6,11 @@ const ALL_FLAGS = ['g', 'i', 'm', 's', 'u']
 
 export default function RegexpTool() {
   const [pattern, setPattern] = useState('')
-  const [flags, setFlags]     = useState(['g', 'i'])
-  const [input, setInput]     = useState('')
+  const [flags, setFlags] = useState(['g', 'i'])
+  const [input, setInput] = useState('')
 
-  const toggleFlag = f => setFlags(prev =>
-    prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]
-  )
+  const toggleFlag = (f) =>
+    setFlags((prev) => (prev.includes(f) ? prev.filter((x) => x !== f) : [...prev, f]))
 
   const { matches, error, highlighted } = useMemo(() => {
     if (!pattern || !input) return { matches: [], error: null, highlighted: null }
@@ -40,19 +39,21 @@ export default function RegexpTool() {
           <input
             className="regexp-input"
             value={pattern}
-            onChange={e => setPattern(e.target.value)}
+            onChange={(e) => setPattern(e.target.value)}
             placeholder="pattern"
             spellCheck={false}
           />
           <span className="regexp-slash">/</span>
           <div className="regexp-flags">
-            {ALL_FLAGS.map(f => (
+            {ALL_FLAGS.map((f) => (
               <button
                 key={f}
                 className={'toggle-btn' + (flags.includes(f) ? ' active' : '')}
                 onClick={() => toggleFlag(f)}
                 title={`Flag: ${f}`}
-              >{f}</button>
+              >
+                {f}
+              </button>
             ))}
           </div>
         </div>
@@ -66,7 +67,7 @@ export default function RegexpTool() {
           <textarea
             className="flex-textarea"
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Paste text to test against…"
             spellCheck={false}
           />
@@ -74,14 +75,19 @@ export default function RegexpTool() {
 
         <Field label={matches.length > 0 ? `Matches (${matches.length})` : 'Matches'} grow>
           <div className="regexp-highlight">
-            {highlighted
-              ? highlighted.map((seg, i) =>
-                  seg.match
-                    ? <mark key={i} className="regexp-mark">{seg.text}</mark>
-                    : <span key={i}>{seg.text}</span>
+            {highlighted ? (
+              highlighted.map((seg, i) =>
+                seg.match ? (
+                  <mark key={i} className="regexp-mark">
+                    {seg.text}
+                  </mark>
+                ) : (
+                  <span key={i}>{seg.text}</span>
                 )
-              : <span style={{ color: 'var(--text3)' }}>Highlighted matches will appear here…</span>
-            }
+              )
+            ) : (
+              <span style={{ color: 'var(--text3)' }}>Highlighted matches will appear here…</span>
+            )}
           </div>
         </Field>
       </div>
@@ -96,8 +102,11 @@ export default function RegexpTool() {
               <code className="regexp-match-text">{m.text}</code>
               {m.groups.length > 0 && (
                 <span className="regexp-match-groups">
-                  groups: {m.groups.map((g, j) => (
-                    <code key={j} className="regexp-group">{g ?? 'undefined'}</code>
+                  groups:{' '}
+                  {m.groups.map((g, j) => (
+                    <code key={j} className="regexp-group">
+                      {g ?? 'undefined'}
+                    </code>
                   ))}
                 </span>
               )}

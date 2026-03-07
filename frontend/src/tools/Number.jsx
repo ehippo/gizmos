@@ -11,34 +11,46 @@ export default function NumberTool() {
   const [error, setError] = useState('')
 
   const convert = (val, base) => {
-    setInput(val); setError(''); setResult(null)
+    setInput(val)
+    setError('')
+    setResult(null)
     if (!val.trim()) return
-    try { setResult(convertNumber(val, BASES[base])) }
-    catch (e) { setError(e.message) }
+    try {
+      setResult(convertNumber(val, BASES[base]))
+    } catch (e) {
+      setError(e.message)
+    }
   }
 
-  const handleBase = b => { setFromBase(b); convert(input, b) }
+  const handleBase = (b) => {
+    setFromBase(b)
+    convert(input, b)
+  }
 
-  const rows = result ? [
-    { key: 'Decimal', value: result.decimal },
-    { key: 'Binary', value: result.binary },
-    { key: 'Octal', value: result.octal },
-    { key: 'Hex', value: result.hex },
-    { key: 'Hex (0x)', value: result.hex0x },
-  ] : []
+  const rows = result
+    ? [
+        { key: 'Decimal', value: result.decimal },
+        { key: 'Binary', value: result.binary },
+        { key: 'Octal', value: result.octal },
+        { key: 'Hex', value: result.hex },
+        { key: 'Hex (0x)', value: result.hex0x },
+      ]
+    : []
 
   const placeholders = { Decimal: '255', Binary: '11111111', Octal: '377', Hex: 'FF' }
 
   return (
     <ToolShell title="Number Base Converter">
       <div className="row">
-        <span className="label" style={{ marginBottom: 0 }}>Input base</span>
+        <span className="label" style={{ marginBottom: 0 }}>
+          Input base
+        </span>
         <Toggle options={Object.keys(BASES)} value={fromBase} onChange={handleBase} />
       </div>
       <Field label={`${fromBase} Input`}>
         <input
           value={input}
-          onChange={e => convert(e.target.value, fromBase)}
+          onChange={(e) => convert(e.target.value, fromBase)}
           placeholder={placeholders[fromBase]}
           spellCheck={false}
           style={{ fontFamily: 'var(--font-mono)' }}

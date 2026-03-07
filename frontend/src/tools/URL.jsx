@@ -10,16 +10,26 @@ export default function URLTool() {
 
   const run = useCallback((value, m) => {
     setError('')
-    if (!value) { setOutput(''); return }
+    if (!value) {
+      setOutput('')
+      return
+    }
     try {
       setOutput(m === 'Encode' ? urlEncode(value) : urlDecode(value))
     } catch (e) {
-      setError(e.message); setOutput('')
+      setError(e.message)
+      setOutput('')
     }
   }, [])
 
-  const handleInput = v => { setInput(v); run(v, mode) }
-  const handleMode = m => { setMode(m); run(input, m) }
+  const handleInput = (v) => {
+    setInput(v)
+    run(v, mode)
+  }
+  const handleMode = (m) => {
+    setMode(m)
+    run(input, m)
+  }
 
   return (
     <ToolShell title="URL Encoder / Decoder">
@@ -29,7 +39,7 @@ export default function URLTool() {
           className="flex-textarea"
           placeholder={mode === 'Encode' ? 'Text to URL-encode…' : 'URL-encoded string to decode…'}
           value={input}
-          onChange={e => handleInput(e.target.value)}
+          onChange={(e) => handleInput(e.target.value)}
           spellCheck={false}
         />
       </Field>
@@ -37,7 +47,8 @@ export default function URLTool() {
       <Field label="Output" action={output && <CopyButton text={output} />}>
         <textarea
           className="flex-textarea output-text"
-          readOnly value={output}
+          readOnly
+          value={output}
           placeholder="Result…"
           spellCheck={false}
         />

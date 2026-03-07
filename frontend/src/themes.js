@@ -22,7 +22,6 @@ export const THEMES = {
       '--yellow': '#dcdcaa',
       '--orange': '#ce9178',
       '--red': '#f44747',
-
     },
   },
   monokai: {
@@ -48,7 +47,6 @@ export const THEMES = {
       '--yellow': '#e6db74',
       '--orange': '#fd971f',
       '--red': '#f92672',
-
     },
   },
   nord: {
@@ -74,7 +72,6 @@ export const THEMES = {
       '--yellow': '#ebcb8b',
       '--orange': '#d08770',
       '--red': '#bf616a',
-
     },
   },
   light: {
@@ -100,7 +97,6 @@ export const THEMES = {
       '--yellow': '#795e26',
       '--orange': '#a31515',
       '--red': '#cd3131',
-
     },
   },
   solarized: {
@@ -126,7 +122,6 @@ export const THEMES = {
       '--yellow': '#b58900',
       '--orange': '#cb4b16',
       '--red': '#dc322f',
-
     },
   },
 }

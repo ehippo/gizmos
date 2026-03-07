@@ -6,3 +6,4 @@ frontend/node_modules/
 *.deb
 .DS_Store
 *.md5
+frontend/wailsjs/
