@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { regexpTest } from '../lib'
-import { Field, StatusBadge, ToolShell, CopyButton } from '../components/ui'
+import { Field, ToolLayout, CopyButton } from '../components/ui'
 
 const ALL_FLAGS = ['g', 'i', 'm', 's', 'u']
 
@@ -30,9 +30,13 @@ export default function RegexpTool() {
     }
   }, [pattern, flags, input])
 
+  const status =
+    error || (pattern && !error && matches.length === 0 && input)
+      ? { ok: false, text: error || 'No matches' }
+      : null
+
   return (
-    <ToolShell title="Regexp Tester">
-      {/* Pattern + flags — always on top, full width */}
+    <ToolLayout title="Regexp Tester" status={status}>
       <Field label="Regular expression">
         <div className="regexp-pattern-row">
           <span className="regexp-slash">/</span>
@@ -59,16 +63,13 @@ export default function RegexpTool() {
         </div>
       </Field>
 
-      {error && <StatusBadge ok={false} text={error} />}
-
-      {/* Side-by-side: input left, highlighted output right */}
       <div className="split-row">
         <Field label="Test input" grow>
           <textarea
             className="flex-textarea"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Paste text to test against…"
+            placeholder="Paste text to test against..."
             spellCheck={false}
           />
         </Field>
@@ -86,13 +87,12 @@ export default function RegexpTool() {
                 )
               )
             ) : (
-              <span style={{ color: 'var(--text3)' }}>Highlighted matches will appear here…</span>
+              <span style={{ color: 'var(--text3)' }}>Highlighted matches will appear here...</span>
             )}
           </div>
         </Field>
       </div>
 
-      {/* Match list below */}
       {matches.length > 0 && (
         <div className="regexp-match-list">
           {matches.map((m, i) => (
@@ -115,10 +115,6 @@ export default function RegexpTool() {
           ))}
         </div>
       )}
-
-      {pattern && !error && matches.length === 0 && input && (
-        <StatusBadge ok={false} text="No matches" />
-      )}
-    </ToolShell>
+    </ToolLayout>
   )
 }

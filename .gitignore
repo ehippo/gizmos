@@ -7,3 +7,4 @@ frontend/node_modules/
 .DS_Store
 *.md5
 frontend/wailsjs/
+.pnpm-store/

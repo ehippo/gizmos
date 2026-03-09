@@ -1,18 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import { hashAllAlgorithms } from '../lib'
-import { KVGrid, Field, Toggle, ToolShell, StatusBadge } from '../components/ui'
+import { hashAllAlgorithms, hashBufferAllAlgorithms, HASH_ALGORITHMS } from '../lib'
+import { KVGrid, Field, Toggle, ToolLayout } from '../components/ui'
 import { Upload } from 'lucide-react'
 
 async function hashFile(file) {
   const buf = await file.arrayBuffer()
-  const results = {}
-  for (const algo of ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512']) {
-    const digest = await crypto.subtle.digest(algo, buf)
-    results[algo] = Array.from(new Uint8Array(digest))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('')
-  }
-  return results
+  return hashBufferAllAlgorithms(buf)
 }
 
 export default function HashTool() {
@@ -24,7 +17,6 @@ export default function HashTool() {
   const [dragging, setDragging] = useState(false)
   const fileRef = useRef()
 
-  // Text mode: hash as-you-type
   useEffect(() => {
     if (mode !== 'Text') return
     if (!input) {
@@ -55,7 +47,7 @@ export default function HashTool() {
   const rows = Object.entries(hashes).map(([k, v]) => ({ key: k, value: v }))
 
   return (
-    <ToolShell title="Hash Generator">
+    <ToolLayout title="Hash Generator">
       <Toggle
         options={['Text', 'File']}
         value={mode}
@@ -69,7 +61,7 @@ export default function HashTool() {
         <Field label="Input text">
           <textarea
             className="flex-textarea"
-            placeholder="Enter text to hash…"
+            placeholder="Enter text to hash..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             spellCheck={false}
@@ -109,15 +101,8 @@ export default function HashTool() {
       {rows.length > 0 ? (
         <KVGrid rows={rows} />
       ) : (
-        <KVGrid
-          rows={[
-            { key: 'SHA-1', value: '—' },
-            { key: 'SHA-256', value: '—' },
-            { key: 'SHA-384', value: '—' },
-            { key: 'SHA-512', value: '—' },
-          ]}
-        />
+        <KVGrid rows={HASH_ALGORITHMS.map((algo) => ({ key: algo, value: '-' }))} />
       )}
-    </ToolShell>
+    </ToolLayout>
   )
 }

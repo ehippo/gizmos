@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { diffLines, diffWords } from 'diff'
-import { Field, ToolShell, Toggle } from '../components/ui'
+import { Field, ToolLayout, Toggle } from '../components/ui'
 
 export default function DiffTool() {
   const [left, setLeft] = useState('')
@@ -36,11 +36,10 @@ export default function DiffTool() {
     return { hunks, stats }
   }, [left, right, mode])
 
-  // Build per-side line numbers for line mode
   const numberedHunks = useMemo(() => {
     if (mode !== 'Line') return hunks
-    let leftN = 1,
-      rightN = 1
+    let leftN = 1
+    let rightN = 1
     return hunks.map((h) => {
       const ln = { ...h }
       if (h.type === 'del') {
@@ -60,13 +59,13 @@ export default function DiffTool() {
   }, [hunks, mode])
 
   return (
-    <ToolShell title="Diff">
+    <ToolLayout title="Diff">
       <div className="row">
         <Toggle options={['Line', 'Word']} value={mode} onChange={setMode} />
         {stats && (
           <div className="diff-stats">
             <span className="diff-stat-add">+{stats.added}</span>
-            <span className="diff-stat-del">−{stats.removed}</span>
+            <span className="diff-stat-del">-{stats.removed}</span>
           </div>
         )}
       </div>
@@ -77,7 +76,7 @@ export default function DiffTool() {
             className="flex-textarea"
             value={left}
             onChange={(e) => setLeft(e.target.value)}
-            placeholder="Paste original text…"
+            placeholder="Paste original text..."
             spellCheck={false}
           />
         </Field>
@@ -86,7 +85,7 @@ export default function DiffTool() {
             className="flex-textarea"
             value={right}
             onChange={(e) => setRight(e.target.value)}
-            placeholder="Paste modified text…"
+            placeholder="Paste modified text..."
             spellCheck={false}
           />
         </Field>
@@ -101,7 +100,7 @@ export default function DiffTool() {
                   <span className="diff-ln">{h.leftN ?? ' '}</span>
                   <span className="diff-ln">{h.rightN ?? ' '}</span>
                   <span className="diff-gutter">
-                    {h.type === 'add' ? '+' : h.type === 'del' ? '−' : ' '}
+                    {h.type === 'add' ? '+' : h.type === 'del' ? '-' : ' '}
                   </span>
                   <span className="diff-text">{h.text || '\u00a0'}</span>
                 </div>
@@ -126,6 +125,6 @@ export default function DiffTool() {
           )}
         </Field>
       )}
-    </ToolShell>
+    </ToolLayout>
   )
 }

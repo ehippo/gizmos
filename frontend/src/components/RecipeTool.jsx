@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ToolShell, CopyButton, Field } from './ui'
+import { ToolLayout, CopyButton, Field } from './ui'
 
 export default function RecipeTool({ title, recipes }) {
   const [recipeId, setRecipeId] = useState(recipes[0].items[0].id)
@@ -16,9 +16,8 @@ export default function RecipeTool({ title, recipes }) {
   const set = (id, val) => setValues((v) => ({ ...v, [id]: val }))
 
   return (
-    <ToolShell title={title}>
+    <ToolLayout title={title}>
       <div className="recipe-layout">
-        {/* Recipe list */}
         <div className="recipe-sidebar">
           {recipes.map((group) => (
             <div key={group.group}>
@@ -41,7 +40,6 @@ export default function RecipeTool({ title, recipes }) {
           ))}
         </div>
 
-        {/* Builder */}
         <div className="recipe-builder">
           {recipe?.description && <div className="recipe-description">{recipe.description}</div>}
           {recipe?.fields.map((f) => (
@@ -67,7 +65,6 @@ export default function RecipeTool({ title, recipes }) {
             </Field>
           ))}
 
-          {/* Output */}
           <div className="recipe-output-wrap">
             <div className="field-header" style={{ marginBottom: 4 }}>
               <span className="label">Generated command</span>
@@ -82,6 +79,6 @@ export default function RecipeTool({ title, recipes }) {
           </div>
         </div>
       </div>
-    </ToolShell>
+    </ToolLayout>
   )
 }

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "diff": "^7.0.0",
+    "expr-eval-fork": "^3.0.3",
     "jose": "^5.9.6",
     "js-beautify": "^1.15.1",
     "jsonrepair": "^3.13.2",

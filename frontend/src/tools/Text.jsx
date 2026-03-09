@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { textStats } from '../lib'
-import { KVGrid, Field, ToolShell } from '../components/ui'
+import { KVGrid, Field, ToolLayout } from '../components/ui'
 
 export default function TextTool() {
   const [input, setInput] = useState('')
@@ -19,17 +19,17 @@ export default function TextTool() {
     : []
 
   return (
-    <ToolShell title="Text Analyzer">
+    <ToolLayout title="Text Analyzer">
       <Field label="Input text">
         <textarea
           className="flex-textarea"
-          placeholder="Paste or type text to analyze…"
+          placeholder="Paste or type text to analyze..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           spellCheck={false}
         />
       </Field>
       {rows.length > 0 && <KVGrid rows={rows} />}
-    </ToolShell>
+    </ToolLayout>
   )
 }

@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { html_beautify, css_beautify } from 'js-beautify'
-import { CopyButton, IconButton, Field, StatusBadge, ToolShell } from '../components/ui'
-import { X } from 'lucide-react'
+import useTransformer from '../hooks/useTransformer'
+import { ToolLayout, InputOutputPane } from '../components/ui'
 
 function runFormatter(lang, value) {
   switch (lang) {
@@ -21,73 +21,22 @@ function runFormatter(lang, value) {
 }
 
 function FormatterTool({ lang }) {
-  const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
-  const [error, setError] = useState('')
-
-  const format = useCallback(
-    (value) => {
-      setError('')
-      if (!value.trim()) {
-        setOutput('')
-        return
-      }
-      try {
-        setOutput(runFormatter(lang, value))
-      } catch (e) {
-        setError(e.message)
-        setOutput('')
-      }
-    },
-    [lang]
-  )
-
-  const handleInput = (v) => {
-    setInput(v)
-    format(v)
-  }
+  const transform = useCallback((value) => runFormatter(lang, value), [lang])
+  const { input, output, error, setInputAndRun, clear } = useTransformer(transform)
 
   return (
-    <ToolShell title={`${lang} Formatter`}>
-      <div className="row">{output && <CopyButton text={output} />}</div>
-
-      {error && <StatusBadge ok={false} text={error} />}
-
-      <div className="split-row">
-        <Field
-          label={`${lang} Input`}
-          action={
-            <IconButton
-              icon={X}
-              label="Clear"
-              onClick={() => {
-                setInput('')
-                setOutput('')
-                setError('')
-              }}
-            />
-          }
-          grow
-        >
-          <textarea
-            className="flex-textarea"
-            placeholder={`Paste ${lang} here…`}
-            value={input}
-            onChange={(e) => handleInput(e.target.value)}
-            spellCheck={false}
-          />
-        </Field>
-        <Field label="Formatted Output" grow>
-          <textarea
-            className="flex-textarea output-text"
-            readOnly
-            value={output}
-            placeholder="Formatted output…"
-            spellCheck={false}
-          />
-        </Field>
-      </div>
-    </ToolShell>
+    <ToolLayout title={`${lang} Formatter`} status={error ? { ok: false, text: error } : null}>
+      <InputOutputPane
+        inputLabel={`${lang} Input`}
+        inputValue={input}
+        onInputChange={setInputAndRun}
+        onInputClear={clear}
+        inputPlaceholder={`Paste ${lang} here...`}
+        outputLabel="Formatted Output"
+        outputValue={output}
+        outputPlaceholder="Formatted output..."
+      />
+    </ToolLayout>
   )
 }
 

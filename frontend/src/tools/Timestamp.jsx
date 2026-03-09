@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { timestampNow, timestampConvert } from '../lib'
-import { KVGrid, Field, StatusBadge, IconButton, ToolShell } from '../components/ui'
+import { KVGrid, Field, IconButton, ToolLayout } from '../components/ui'
 import { RefreshCw } from 'lucide-react'
 
 export default function TimestampTool() {
@@ -41,20 +41,19 @@ export default function TimestampTool() {
     : []
 
   return (
-    <ToolShell title="Timestamp Converter">
+    <ToolLayout title="Timestamp Converter" status={error ? { ok: false, text: error } : null}>
       <Field
-        label="Input — Unix (s/ms), ISO 8601, or any date string"
+        label="Input - Unix (s/ms), ISO 8601, or any date string"
         action={<IconButton icon={RefreshCw} label="Now" onClick={loadNow} />}
       >
         <input
           value={input}
           onChange={(e) => convert(e.target.value)}
-          placeholder="1700000000 · 2024-01-15T10:30:00Z · Jan 15 2024"
+          placeholder="1700000000 - 2024-01-15T10:30:00Z - Jan 15 2024"
           spellCheck={false}
         />
       </Field>
-      {error && <StatusBadge ok={false} text={error} />}
       {result && <KVGrid rows={rows} />}
-    </ToolShell>
+    </ToolLayout>
   )
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { parseColor } from '../lib'
-import { KVGrid, Field, StatusBadge, ToolShell } from '../components/ui'
+import { KVGrid, Field, ToolLayout } from '../components/ui'
 
 export default function ColorTool() {
   const [input, setInput] = useState('')
@@ -29,13 +29,13 @@ export default function ColorTool() {
     : []
 
   return (
-    <ToolShell title="Color Converter">
-      <Field label="Color input — #hex, rgb(), rgba(), hsl()">
+    <ToolLayout title="Color Converter" status={error ? { ok: false, text: error } : null}>
+      <Field label="Color input - #hex, rgb(), rgba(), hsl()">
         <div className="row gap-sm" style={{ alignItems: 'stretch' }}>
           <input
             value={input}
             onChange={(e) => convert(e.target.value)}
-            placeholder="#1e90ff · rgb(30,144,255) · hsl(210,100%,56%)"
+            placeholder="#1e90ff - rgb(30,144,255) - hsl(210,100%,56%)"
             spellCheck={false}
             style={{ flex: 1 }}
           />
@@ -56,26 +56,22 @@ export default function ColorTool() {
         </div>
       </Field>
 
-      {error && <StatusBadge ok={false} text={error} />}
-
-      {/* Always-visible swatch — shows placeholder when empty */}
       <div className="color-swatch" style={{ background: result ? result.preview : 'var(--bg2)' }}>
         {!result && <span className="color-swatch-empty">Color preview</span>}
       </div>
 
-      {/* Always-visible KV grid — empty rows when no result */}
       <KVGrid
         rows={
           rows.length > 0
             ? rows
             : [
-                { key: 'HEX', value: '—' },
-                { key: 'RGB', value: '—' },
-                { key: 'RGBA', value: '—' },
-                { key: 'HSL', value: '—' },
+                { key: 'HEX', value: '-' },
+                { key: 'RGB', value: '-' },
+                { key: 'RGBA', value: '-' },
+                { key: 'HSL', value: '-' },
               ]
         }
       />
-    </ToolShell>
+    </ToolLayout>
   )
 }

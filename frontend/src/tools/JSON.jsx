@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { jsonrepair } from 'jsonrepair'
 import { jsonFormat, jsonMinify } from '../lib'
-import { CopyButton, Toggle, Checkbox, Field, StatusBadge, ToolShell } from '../components/ui'
+import { Toggle, Checkbox, ToolLayout, InputOutputPane } from '../components/ui'
 import JsonTree from '../components/JsonTree'
 
 export default function JSONTool() {
@@ -35,10 +35,12 @@ export default function JSONTool() {
     setInput(v)
     run(v, indent, repair)
   }
+
   const handleIndent = (v) => {
     setIndent(v)
     run(input, v, repair)
   }
+
   const handleRepair = (v) => {
     setRepair(v)
     run(input, indent, v)
@@ -54,7 +56,7 @@ export default function JSONTool() {
   }, [output])
 
   return (
-    <ToolShell title="JSON Formatter">
+    <ToolLayout title="JSON Formatter" status={error ? { ok: false, text: error } : null}>
       <div className="row gap-sm">
         <Toggle
           options={['Viewer', 'Formatted JSON']}
@@ -77,41 +79,28 @@ export default function JSONTool() {
         <Checkbox label="Fix JSON" checked={repair} onChange={handleRepair} />
       </div>
 
-      <div className="split-row">
-        <Field label="Input JSON" action={<CopyButton text={input} />} grow>
-          <textarea
-            className="flex-textarea"
-            placeholder='{"key": "value"}'
-            value={input}
-            onChange={(e) => handleInput(e.target.value)}
-            spellCheck={false}
-          />
-        </Field>
-
-        <Field
-          label={view === 'viewer' ? 'Viewer' : 'Formatted JSON'}
-          action={<CopyButton text={output} />}
-          grow
-        >
-          {view === 'viewer' && parsedData ? (
+      <InputOutputPane
+        inputLabel="Input JSON"
+        inputValue={input}
+        onInputChange={handleInput}
+        inputPlaceholder='{"key": "value"}'
+        outputLabel={view === 'viewer' ? 'Viewer' : 'Formatted JSON'}
+        outputValue={output}
+        outputPlaceholder="Formatted JSON will appear here..."
+        renderOutput={() =>
+          view === 'viewer' && parsedData ? (
             <JsonTree data={parsedData} />
           ) : (
             <textarea
               className="flex-textarea output-text"
               readOnly
               value={output}
-              placeholder="Formatted JSON will appear here…"
+              placeholder="Formatted JSON will appear here..."
               spellCheck={false}
             />
-          )}
-        </Field>
-      </div>
-
-      {error && (
-        <div style={{ marginTop: 4, width: '100%' }}>
-          <StatusBadge ok={false} text={error} />
-        </div>
-      )}
-    </ToolShell>
+          )
+        }
+      />
+    </ToolLayout>
   )
 }

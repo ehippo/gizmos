@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { SignJWT, jwtVerify as joseVerify } from 'jose'
 import { jwtDecode } from '../lib'
-import { CopyButton, IconButton, Toggle, Field, StatusBadge, ToolShell } from '../components/ui'
+import { CopyButton, IconButton, Toggle, Field, StatusBadge, ToolLayout } from '../components/ui'
 import { RefreshCw } from 'lucide-react'
 import JsonTree from '../components/JsonTree'
 
@@ -300,11 +300,11 @@ function VerifyTab() {
 export default function JWTTool() {
   const [tab, setTab] = useState('Decode')
   return (
-    <ToolShell title="JWT — Decode · Create · Verify">
+    <ToolLayout title="JWT — Decode · Create · Verify">
       <Toggle options={['Decode', 'Create', 'Verify']} value={tab} onChange={setTab} />
       {tab === 'Decode' && <DecodeTab />}
       {tab === 'Create' && <CreateTab />}
       {tab === 'Verify' && <VerifyTab />}
-    </ToolShell>
+    </ToolLayout>
   )
 }

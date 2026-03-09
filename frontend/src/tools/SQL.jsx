@@ -1,51 +1,36 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { format as sqlFmt } from 'sql-formatter'
-import { CopyButton, Field, StatusBadge, ToolShell } from '../components/ui'
-import { X } from 'lucide-react'
+import useTransformer from '../hooks/useTransformer'
+import { ToolLayout, InputOutputPane } from '../components/ui'
 
 const SQL_DIALECTS = ['sql', 'mysql', 'postgresql', 'sqlite', 'tsql', 'bigquery']
 
 export default function SQLTool() {
-  const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
-  const [error, setError] = useState('')
   const [dialect, setDialect] = useState('sql')
 
-  const format = useCallback(
-    (value, d) => {
-      setError('')
-      if (!value.trim()) {
-        setOutput('')
-        return
-      }
-      try {
-        setOutput(
-          sqlFmt(value, {
-            language: d || dialect,
-            tabWidth: 2,
-            keywordCase: 'upper',
-            linesBetweenQueries: 2,
-          })
-        )
-      } catch (e) {
-        setError(e.message)
-        setOutput('')
-      }
-    },
-    [dialect]
+  const { input, output, error, setInputAndRun, run, clear } = useTransformer((value) =>
+    sqlFmt(value, {
+      language: dialect,
+      tabWidth: 2,
+      keywordCase: 'upper',
+      linesBetweenQueries: 2,
+    })
   )
 
-  const handleInput = (v) => {
-    setInput(v)
-    format(v)
-  }
-  const handleDialect = (d) => {
-    setDialect(d)
-    format(input, d)
+  const handleDialect = (nextDialect) => {
+    setDialect(nextDialect)
+    run(input, (value) =>
+      sqlFmt(value, {
+        language: nextDialect,
+        tabWidth: 2,
+        keywordCase: 'upper',
+        linesBetweenQueries: 2,
+      })
+    )
   }
 
   return (
-    <ToolShell title="SQL Formatter">
+    <ToolLayout title="SQL Formatter" status={error ? { ok: false, text: error } : null}>
       <div className="row">
         <select
           className="recipe-select"
@@ -59,46 +44,18 @@ export default function SQLTool() {
             </option>
           ))}
         </select>
-        {output && <CopyButton text={output} />}
       </div>
 
-      {error && <StatusBadge ok={false} text={error} />}
-
-      <div className="split-row">
-        <Field
-          label="SQL Input"
-          action={
-            <button
-              className="btn-icon"
-              onClick={() => {
-                setInput('')
-                setOutput('')
-                setError('')
-              }}
-            >
-              <X size={14} />
-            </button>
-          }
-          grow
-        >
-          <textarea
-            className="flex-textarea"
-            placeholder="Paste SQL here…"
-            value={input}
-            onChange={(e) => handleInput(e.target.value)}
-            spellCheck={false}
-          />
-        </Field>
-        <Field label="Formatted SQL" grow>
-          <textarea
-            className="flex-textarea output-text"
-            readOnly
-            value={output}
-            placeholder="Formatted SQL output…"
-            spellCheck={false}
-          />
-        </Field>
-      </div>
-    </ToolShell>
+      <InputOutputPane
+        inputLabel="SQL Input"
+        inputValue={input}
+        onInputChange={setInputAndRun}
+        onInputClear={clear}
+        inputPlaceholder="Paste SQL here..."
+        outputLabel="Formatted SQL"
+        outputValue={output}
+        outputPlaceholder="Formatted SQL output..."
+      />
+    </ToolLayout>
   )
 }
