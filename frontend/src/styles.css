@@ -14,10 +14,10 @@
   --bg4: #464646;
   --border: #3c3c3c;
   --border-light: #555;
-  --text0: #d4d4d4;
-  --text1: #cccccc;
-  --text2: #9d9d9d;
-  --text3: #555;
+  --text0: #e8e8e8;
+  --text1: #dedede;
+  --text2: #b8b8b8;
+  --text3: #707070;
   --accent: #0e639c;
   --accent-hover: #1177bb;
   --accent-light: #1a3a5c;
@@ -48,6 +48,21 @@ body {
   font-size: 13px;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Allow text selection inside textareas and inputs */
+textarea,
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='search'],
+input[type='password'],
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
 }
 
 ::-webkit-scrollbar {
